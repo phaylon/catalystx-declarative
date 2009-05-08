@@ -10,8 +10,9 @@ class CatalystX::Declarative::Keyword::Controller
 
 
     before add_namespace_customizations (Object $ctx, Str $package) {
+
         MooseX::MethodAttributes->init_meta(for_class => $package);
-        #$ctx->add_preamble_code_parts('use MooseX::MethodAttributes');
+        $ctx->add_preamble_code_parts('use CLASS');
     }
 
     method default_superclasses { 'Catalyst::Controller' }

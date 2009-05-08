@@ -21,7 +21,6 @@ class CatalystX::Declarative::Keyword::Action
 
         # parse declarations
         until (do { $ctx->skipspace; $ctx->peek_next_char } eq any qw( ; { } )) {
-            warn "LINESTR[" . pp($ctx->get_linestr) . "]\n";
 
             $ctx->skipspace;
             
@@ -86,8 +85,6 @@ class CatalystX::Declarative::Keyword::Action
                     $method->injectable_code,
             );
         }
-
-        pp \%attributes;
 
         AttributeRole->meta->apply($method);
 
@@ -203,7 +200,7 @@ class CatalystX::Declarative::Keyword::Action
             $ctx->set_linestr($linestr);
             return $1;
         }
-        elsif ($rest =~ /^ ' ( (?:[a-z0-9]|\/)* ) ' /ix) {
+        elsif ($rest =~ /^ ' ( (?:[.:;,_a-z0-9]|\/)* ) ' /ix) {
             substr($linestr, $ctx->offset, length($1) + 2) = '';
             $ctx->set_linestr($linestr);
             return $1;
