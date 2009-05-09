@@ -1,7 +1,24 @@
 use CatalystX::Declarative;
 
+role MyActionYes {
+    around match (@args) { $ENV{TESTAPP_ACTIONROLE} ? $self->$orig(@args) : undef }
+}
+
+role TestApp::Try::Aliasing::MyActionNo {
+    around match (@args) { $ENV{TESTAPP_ACTIONROLE} ? undef : $self->$orig(@args) }
+}
+
+class TestApp::Action::Page extends Catalyst::Action {
+
+    around execute ($controller, $ctx, @args) {
+        my $page = $ctx->request->params->{page} || 1;
+        return $self->$orig($controller, $ctx, @args, page => $page);
+    }
+}
+
 controller TestApp::Controller::Foo {
 
+    use constant MyActionNo => 'TestApp::Try::Aliasing::MyActionNo';
 
     #
     #   look, a Moose!
@@ -115,5 +132,41 @@ controller TestApp::Controller::Foo {
         }
     }
 
+
+    #
+    #   action roles
+    #
+
+    action with_role_yes 
+        is final 
+        as with_role 
+     under base 
+      with MyActionYes 
+           { $ctx->res->body('YES') };
+
+    action with_role_no 
+        is final 
+        as with_role 
+     under base 
+      with MyActionNo 
+           { $ctx->res->body('NO') };
+
+
+    #
+    #   action classes
+    #
+
+    action book (Str $title) under base {
+        $ctx->stash(title => $title);
+    }
+
+    action view (Str $format, Int :$page) under book isa Page is final {
+        $ctx->response->body(
+            sprintf 'Page %d of "%s" as %s',
+                $page,
+                $ctx->stash->{title},
+                uc($format),
+        );
+    }
 }
 

@@ -7,12 +7,20 @@ class CatalystX::Declarative::Keyword::Controller
 
     use MooseX::MethodAttributes ();
     use aliased 'CatalystX::Declarative::Keyword::Action', 'ActionKeyword';
+    use aliased 'CatalystX::Declarative::Controller::RegisterActionRoles';
+    use aliased 'CatalystX::Declarative::Controller::DetermineActionClass';
 
 
     before add_namespace_customizations (Object $ctx, Str $package) {
 
         MooseX::MethodAttributes->init_meta(for_class => $package);
-        $ctx->add_preamble_code_parts('use CLASS');
+        $ctx->add_preamble_code_parts(
+            'use CLASS',
+            sprintf('with qw( %s )', join ' ',
+                RegisterActionRoles,
+                DetermineActionClass,
+            ),
+        );
     }
 
     method default_superclasses { 'Catalyst::Controller' }

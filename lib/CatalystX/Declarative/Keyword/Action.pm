@@ -4,9 +4,13 @@ class CatalystX::Declarative::Keyword::Action
     with MooseX::Declare::Syntax::KeywordHandling {
 
 
-    use Carp            qw( croak );
-    use Perl6::Junction qw( any );
-    use Data::Dump      qw( pp );
+    use Carp                qw( croak );
+    use Perl6::Junction     qw( any );
+    use Data::Dump          qw( pp );
+    use MooseX::Types::Util qw( has_available_type_export );
+    use Class::Inspector;
+    use Class::MOP;
+
 
     use constant STOP_PARSING   => '__MXDECLARE_STOP_PARSING__';
     use constant UNDER_VAR      => '$CatalystX::Declarative::SCOPE::UNDER';
@@ -77,6 +81,8 @@ class CatalystX::Declarative::Keyword::Action
             name            => $name,
         );
 
+        AttributeRole->meta->apply($method);
+
         $_->($method)
             for @populators;
 
@@ -100,12 +106,14 @@ class CatalystX::Declarative::Keyword::Action
             );
         }
 
-        AttributeRole->meta->apply($method);
-
         my @attributes = map { 
             join('',
                 $_,
-                sprintf('(%s)', $attributes{ $_ }),
+                sprintf('(%s)',
+                    ref($attributes{ $_ }) eq 'ARRAY'
+                    ? join(' ', @{ $attributes{ $_ } })
+                    : $attributes{ $_ }
+                ),
             );
         } keys %attributes;
 
@@ -118,6 +126,44 @@ class CatalystX::Declarative::Keyword::Action
             $class->meta->add_method($name, $method);
             $class->meta->register_method_attributes($class->can($method->name), \@attributes);
         });
+    }
+
+    method _handle_with_option (Object $ctx, HashRef $attrs) {
+
+        my $role = $ctx->strip_name
+            or croak "Expected bareword role specification for action after with";
+
+        # we need to fish for aliases here since we are still unclean
+        if (defined(my $alias = $self->_check_for_available_import($ctx, $role))) {
+            $role = $alias;
+        }
+
+        push @{ $attrs->{CatalystX_Declarative_ActionRoles} ||= [] }, $role;
+
+        return;
+    }
+
+    method _handle_isa_option (Object $ctx, HashRef $attrs) {
+
+        my $class = $ctx->strip_name
+            or croak "Expected bareword action class specification for action after isa";
+
+        if (defined(my $alias = $self->_check_for_available_import($ctx, $class))) {
+            $class = $alias;
+        }
+
+        $attrs->{CatalystX_Declarative_ActionClass} = $class;
+
+        return;
+    }
+
+    method _check_for_available_import (Object $ctx, Str $name) {
+
+        if (my $code = $ctx->get_curstash_name->can($name)) {
+            return $code->();
+        }
+
+        return undef;
     }
 
     method _handle_action_option (Object $ctx, HashRef $attrs) {
@@ -165,7 +211,8 @@ class CatalystX::Declarative::Keyword::Action
 
         if ($ctx->peek_next_char eq '{' and $self->identifier eq 'under') {
             $ctx->inject_if_block(
-                sprintf 'local %s; BEGIN { %s = qq(%s) };',
+                sprintf '%s; local %s; BEGIN { %s = qq(%s) };',
+                    $ctx->scope_injector_call,
                     UNDER_VAR,
                     UNDER_VAR,
                     $target,
