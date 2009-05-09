@@ -24,4 +24,4 @@ is get('/foo/under/23'), 'under 23', 'under as keyword';
 is get('/foo/,comma/iaia'), 'iaia', 'comma separation';
 
 # nested under
-is get('/foo/lower/down/the/stream'), 23, 'nested under blocks';
+is get('/foo/lower/down/the/stream'), 'foo/stream', 'nested under blocks';

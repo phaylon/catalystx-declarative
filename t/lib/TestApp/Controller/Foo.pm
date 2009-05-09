@@ -109,7 +109,7 @@ controller TestApp::Controller::Foo {
             under the {
 
                 action stream is final {
-                    $ctx->response->body(23);
+                    $ctx->response->body($ctx->action->reverse);
                 }
             }
         }
