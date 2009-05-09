@@ -91,5 +91,29 @@ controller TestApp::Controller::Foo {
         $ctx->response->body($str);
     }
 
+
+    #
+    #   subnamespacing
+    #
+
+    action lower under base;
+
+    under lower {
+
+        action down;
+
+        under down {
+
+            action the;
+
+            under the {
+
+                action stream is final {
+                    $ctx->response->body(23);
+                }
+            }
+        }
+    }
+
 }
 

@@ -8,6 +8,9 @@ class CatalystX::Declarative::Keyword::Action
     use Perl6::Junction qw( any );
     use Data::Dump      qw( pp );
 
+    use constant STOP_PARSING   => '__MXDECLARE_STOP_PARSING__';
+    use constant UNDER_VAR      => '$CatalystX::Declarative::SCOPE::UNDER';
+
     use aliased 'MooseX::Method::Signatures::Meta::Method';
     use aliased 'MooseX::MethodAttributes::Role::Meta::Method', 'AttributeRole';
 
@@ -50,7 +53,18 @@ class CatalystX::Declarative::Keyword::Action
                 or croak "Unknown action option: $option";
 
             # call the handler
-            push @populators, $self->$handler($ctx, \%attributes);
+            my $populator = $self->$handler($ctx, \%attributes);
+
+            if ($populator and $populator eq STOP_PARSING) {
+
+                return $ctx->shadow(sub (&) {
+                    my ($body) = @_;
+                    return $body->();
+                });
+            }
+
+            push @populators, $populator
+                if defined $populator;
         }
 
         croak "Need an action specification"
@@ -102,7 +116,7 @@ class CatalystX::Declarative::Keyword::Action
             $method->{attributes} = \@attributes;
     
             $class->meta->add_method($name, $method);
-            $class->meta->register_method_attributes($class->can($method->name), \%attributes);
+            $class->meta->register_method_attributes($class->can($method->name), \@attributes);
         });
     }
 
@@ -118,6 +132,10 @@ class CatalystX::Declarative::Keyword::Action
 
         $attrs->{Subname}   = $name;
         $attrs->{Signature} = $proto;
+
+        if (defined $CatalystX::Declarative::SCOPE::UNDER) {
+            $attrs->{Chained} ||= $CatalystX::Declarative::SCOPE::UNDER;
+        }
 
         return;
     }
@@ -143,6 +161,18 @@ class CatalystX::Declarative::Keyword::Action
     method _handle_under_option (Object $ctx, HashRef $attrs) {
 
         my $target = $self->_strip_actionpath($ctx);
+        $ctx->skipspace;
+
+        if ($ctx->peek_next_char eq '{' and $self->identifier eq 'under') {
+            $ctx->inject_if_block(
+                sprintf 'local %s; BEGIN { %s = qq(%s) };',
+                    UNDER_VAR,
+                    UNDER_VAR,
+                    $target,
+            );
+            return STOP_PARSING;
+        }
+
         $attrs->{Chained} = "'$target'";
 
         return sub {

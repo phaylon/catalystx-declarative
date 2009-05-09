@@ -5,7 +5,7 @@ use warnings;
 use FindBin;
 use lib "$FindBin::Bin/lib";
 
-use Test::More tests => 7;
+use Test::More tests => 8;
 use Catalyst::Test 'TestApp';
 
 # simple stuff
@@ -22,3 +22,6 @@ is get('/foo/under/23'), 'under 23', 'under as keyword';
 
 # comma separation
 is get('/foo/,comma/iaia'), 'iaia', 'comma separation';
+
+# nested under
+is get('/foo/lower/down/the/stream'), 23, 'nested under blocks';
