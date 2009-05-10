@@ -168,5 +168,18 @@ controller TestApp::Controller::Foo {
                 uc($format),
         );
     }
+
+
+    #
+    #   using final as syntax element
+    #
+
+    action final_base as 'finals' under base;
+
+    final action in_front under final_base { $ctx->response->body($ctx->action->reverse) }
+
+    under final_base, final action final_middle { $ctx->response->body($ctx->action->reverse) }
+
+    action final_at_end, final under final_base { $ctx->response->body($ctx->action->reverse) }
 }
 

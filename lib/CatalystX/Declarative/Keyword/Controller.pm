@@ -31,6 +31,7 @@ class CatalystX::Declarative::Keyword::Controller
             @{ $self->$orig() || [] },
             ActionKeyword->new(identifier => 'action'),
             ActionKeyword->new(identifier => 'under'),
+            ActionKeyword->new(identifier => 'final'),
         ];
     }
 }

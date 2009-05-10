@@ -186,10 +186,20 @@ class CatalystX::Declarative::Keyword::Action
         return;
     }
 
+    method _handle_final_option (Object $ctx, HashRef $attrs) {
+
+        return $self->_build_flag_populator($ctx, $attrs, 'final');
+    }
+
     method _handle_is_option (Object $ctx, HashRef $attrs) {
 
         my $what = $ctx->strip_name
             or croak "Expected symbol token after is symbol, not " . substr($ctx->get_linestr, $ctx->offset);
+
+        return $self->_build_flag_populator($ctx, $attrs, $what);
+    }
+
+    method _build_flag_populator (Object $ctx, HashRef $attrs, Str $what) {
 
         return sub {
             my $method = shift;
