@@ -5,7 +5,7 @@ use warnings;
 use FindBin;
 use lib "$FindBin::Bin/lib";
 
-use Test::More tests => 16;
+use Test::More tests => 17;
 use Catalyst::Test 'TestApp';
 
 # simple stuff
@@ -47,3 +47,6 @@ is get('/foo/finals/final_at_end'), 'foo/final_at_end', 'final syntax element at
 
 # privates
 is get('/foo/expose_not_really_here'), 23, 'private action works';
+
+# specify chain target directly via action
+is get('/foo/pointed/beaver'), 'Your beaver is pointed!', 'chain target specified via action';

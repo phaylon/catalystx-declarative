@@ -193,5 +193,12 @@ controller TestApp::Controller::Foo {
         $ctx->forward('not_really_here');
         $ctx->response->body($ctx->stash->{foo});
     }
+
+
+    #
+    #   chain target specified via action
+    #
+
+    action pointed <- base ($what) is final { $ctx->response->body("Your $what is pointed!") }
 }
 

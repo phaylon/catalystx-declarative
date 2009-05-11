@@ -98,7 +98,6 @@ class CatalystX::Declarative::Keyword::Action
         }
 
         if ($attributes{Private}) {
-#            warn "PRIVATE $name";
             delete $attributes{ $_ }
                 for qw( Args CaptureArgs Chained Signature Subname Action );
         }
@@ -124,7 +123,6 @@ class CatalystX::Declarative::Keyword::Action
                 : "($attributes{ $_ })"
             );
         } keys %attributes;
-#        warn "ATTRS[ @attributes ]\n";
 
         return $ctx->shadow(sub (&) {
             my $class = caller;
@@ -181,6 +179,16 @@ class CatalystX::Declarative::Keyword::Action
         my $name = $ctx->strip_name
             or croak "Anonymous actions not yet supported";
 
+        $ctx->skipspace;
+        my $populator;
+
+        if (substr($ctx->get_linestr, $ctx->offset, 2) eq '<-') {
+            my $linestr = $ctx->get_linestr;
+            substr($linestr, $ctx->offset, 2) = '';
+            $ctx->set_linestr($linestr);
+            $populator = $self->_handle_under_option($ctx, $attrs);
+        }
+
         # signature
         my $proto = $ctx->strip_proto || '';
         $proto = join(', ', 'Object $self: Object $ctx', $proto || ());
@@ -193,7 +201,8 @@ class CatalystX::Declarative::Keyword::Action
             $attrs->{Chained} ||= $CatalystX::Declarative::SCOPE::UNDER;
         }
 
-        return;
+        return unless $populator;
+        return $populator;
     }
 
     method _handle_final_option (Object $ctx, HashRef $attrs) {
