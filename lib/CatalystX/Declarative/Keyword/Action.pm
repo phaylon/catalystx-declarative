@@ -86,14 +86,22 @@ class CatalystX::Declarative::Keyword::Action
         $_->($method)
             for @populators;
 
-        $attributes{PathPart} ||= "'$name'";
+        unless ($attributes{Private}) {
+            $attributes{PathPart} ||= "'$name'";
 
-        delete $attributes{CaptureArgs}
-            if exists $attributes{Args};
+            delete $attributes{CaptureArgs}
+                if exists $attributes{Args};
 
-        $attributes{CaptureArgs} = 0
-            unless exists $attributes{Args}
-                or exists $attributes{CaptureArgs};
+            $attributes{CaptureArgs} = 0
+                unless exists $attributes{Args}
+                    or exists $attributes{CaptureArgs};
+        }
+
+        if ($attributes{Private}) {
+#            warn "PRIVATE $name";
+            delete $attributes{ $_ }
+                for qw( Args CaptureArgs Chained Signature Subname Action );
+        }
 
         if ($ctx->peek_next_char eq '{') {
             $ctx->inject_if_block($ctx->scope_injector_call . $method->injectable_code);
@@ -109,13 +117,14 @@ class CatalystX::Declarative::Keyword::Action
         my @attributes = map { 
             join('',
                 $_,
-                sprintf('(%s)',
-                    ref($attributes{ $_ }) eq 'ARRAY'
-                    ? join(' ', @{ $attributes{ $_ } })
-                    : $attributes{ $_ }
-                ),
+                ref($attributes{ $_ }) eq 'ARRAY'
+                ? ( scalar(@{ $attributes{ $_ } })
+                    ? sprintf('(%s)', join(' ', @{ $attributes{ $_ } }))
+                    : '' )
+                : "($attributes{ $_ })"
             );
         } keys %attributes;
+#        warn "ATTRS[ @attributes ]\n";
 
         return $ctx->shadow(sub (&) {
             my $class = caller;
@@ -178,6 +187,7 @@ class CatalystX::Declarative::Keyword::Action
 
         $attrs->{Subname}   = $name;
         $attrs->{Signature} = $proto;
+        $attrs->{Action}    = [];
 
         if (defined $CatalystX::Declarative::SCOPE::UNDER) {
             $attrs->{Chained} ||= $CatalystX::Declarative::SCOPE::UNDER;
@@ -209,7 +219,7 @@ class CatalystX::Declarative::Keyword::Action
                 $attrs->{Args} = defined($count) ? $count : '';
             }
             elsif ($what eq 'private') {
-                $attrs->{Private} = 1;
+                $attrs->{Private} = [];
             }
         };
     }

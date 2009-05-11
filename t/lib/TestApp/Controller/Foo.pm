@@ -181,5 +181,17 @@ controller TestApp::Controller::Foo {
     under final_base, final action final_middle { $ctx->response->body($ctx->action->reverse) }
 
     action final_at_end, final under final_base { $ctx->response->body($ctx->action->reverse) }
+
+
+    #
+    #   privates
+    #
+
+    action not_really_here is private { $ctx->stash(foo => 23) }
+
+    action expose_not_really_here under base is final { 
+        $ctx->forward('not_really_here');
+        $ctx->response->body($ctx->stash->{foo});
+    }
 }
 

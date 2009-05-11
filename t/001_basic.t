@@ -5,7 +5,7 @@ use warnings;
 use FindBin;
 use lib "$FindBin::Bin/lib";
 
-use Test::More tests => 15;
+use Test::More tests => 16;
 use Catalyst::Test 'TestApp';
 
 # simple stuff
@@ -44,3 +44,6 @@ is get('/foo/book/Fnord/view/html?page=7'), 'Page 7 of "Fnord" as HTML', 'action
 is get('/foo/finals/in_front'), 'foo/in_front', 'final syntax element as declarator';
 is get('/foo/finals/final_middle'), 'foo/final_middle', 'final syntax element in the middle';
 is get('/foo/finals/final_at_end'), 'foo/final_at_end', 'final syntax element at the end';
+
+# privates
+is get('/foo/expose_not_really_here'), 23, 'private action works';
