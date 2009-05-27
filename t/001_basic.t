@@ -5,8 +5,11 @@ use warnings;
 use FindBin;
 use lib "$FindBin::Bin/lib";
 
-use Test::More tests => 17;
 use Catalyst::Test 'TestApp';
+
+#exit if $ENV{TESTAPP_DEBUG};
+
+use Test::More tests => 18;
 
 # simple stuff
 is get('/foo'), 'Welcome to TestApp!', 'simple root action';
@@ -50,3 +53,6 @@ is get('/foo/expose_not_really_here'), 23, 'private action works';
 
 # specify chain target directly via action
 is get('/foo/pointed/beaver'), 'Your beaver is pointed!', 'chain target specified via action';
+
+# config from file
+is get('/foo/cff'), 'foo/config_from_file', 'actions can be configured from config file';

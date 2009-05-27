@@ -1,11 +1,13 @@
-package TestApp;
-use strict;
-use warnings;
+use CatalystX::Declarative;
+use FindBin;
 
-use parent 'Catalyst';
-use Catalyst qw( Static::Simple );
+application TestApp 
+    with ConfigLoader 
+    with Static::Simple {
 
-__PACKAGE__->config(name => 'CatalystX::Declarative TestApp');
-__PACKAGE__->setup;
+    CLASS->config(foobar => "baz");
 
-1;
+    method loc ($msg) { uc $msg }
+}
+
+

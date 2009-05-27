@@ -200,5 +200,12 @@ controller TestApp::Controller::Foo {
     #
 
     action pointed <- base ($what) is final { $ctx->response->body("Your $what is pointed!") }
+
+
+    #
+    #   configure from file
+    #
+
+    final action config_from_file <- base { $ctx->response->body($ctx->action->reverse) }
 }
 
