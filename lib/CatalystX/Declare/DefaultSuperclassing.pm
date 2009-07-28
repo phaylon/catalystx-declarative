@@ -1,6 +1,6 @@
 use MooseX::Declare;
 
-role CatalystX::Declarative::DefaultSuperclassing {
+role CatalystX::Declare::DefaultSuperclassing {
 
     requires qw(
         default_superclasses

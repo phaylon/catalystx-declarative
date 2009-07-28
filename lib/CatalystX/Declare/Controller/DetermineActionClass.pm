@@ -1,8 +1,8 @@
 use MooseX::Declare;
 use Class::MOP;
 
-role CatalystX::Declarative::Controller::DetermineActionClass
-    with CatalystX::Declarative::Controller::QualifyClassNames {
+role CatalystX::Declare::Controller::DetermineActionClass
+    with CatalystX::Declare::Controller::QualifyClassNames {
 
     around create_action (%args) {
 

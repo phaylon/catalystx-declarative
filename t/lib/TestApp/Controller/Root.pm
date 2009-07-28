@@ -1,4 +1,4 @@
-use CatalystX::Declarative;
+use CatalystX::Declare;
 
 controller TestApp::Controller::Root {
     CLASS->config(namespace => '');

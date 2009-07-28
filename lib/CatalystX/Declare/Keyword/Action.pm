@@ -1,6 +1,6 @@
 use MooseX::Declare;
 
-class CatalystX::Declarative::Keyword::Action
+class CatalystX::Declare::Keyword::Action
     with MooseX::Declare::Syntax::KeywordHandling {
 
 
@@ -13,7 +13,7 @@ class CatalystX::Declarative::Keyword::Action
 
 
     use constant STOP_PARSING   => '__MXDECLARE_STOP_PARSING__';
-    use constant UNDER_VAR      => '$CatalystX::Declarative::SCOPE::UNDER';
+    use constant UNDER_VAR      => '$CatalystX::Declare::SCOPE::UNDER';
 
     use aliased 'MooseX::Method::Signatures::Meta::Method';
     use aliased 'MooseX::MethodAttributes::Role::Meta::Method', 'AttributeRole';
@@ -197,8 +197,8 @@ class CatalystX::Declarative::Keyword::Action
         $attrs->{Signature} = $proto;
         $attrs->{Action}    = [];
 
-        if (defined $CatalystX::Declarative::SCOPE::UNDER) {
-            $attrs->{Chained} ||= $CatalystX::Declarative::SCOPE::UNDER;
+        if (defined $CatalystX::Declare::SCOPE::UNDER) {
+            $attrs->{Chained} ||= $CatalystX::Declare::SCOPE::UNDER;
         }
 
         return unless $populator;

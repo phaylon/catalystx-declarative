@@ -3,7 +3,7 @@ use MooseX::Declare;
 use Class::MOP;
 use Class::Inspector;
 
-role CatalystX::Declarative::Controller::QualifyClassNames {
+role CatalystX::Declare::Controller::QualifyClassNames {
 
     use Carp qw( croak );
 

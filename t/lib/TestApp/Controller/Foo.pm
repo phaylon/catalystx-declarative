@@ -1,4 +1,4 @@
-use CatalystX::Declarative;
+use CatalystX::Declare;
 
 role MyActionYes {
     around match (@args) { $ENV{TESTAPP_ACTIONROLE} ? $self->$orig(@args) : undef }

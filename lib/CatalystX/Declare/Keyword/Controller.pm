@@ -1,14 +1,14 @@
 use MooseX::Declare;
 
-class CatalystX::Declarative::Keyword::Controller 
+class CatalystX::Declare::Keyword::Controller 
     extends MooseX::Declare::Syntax::Keyword::Class
-    with    CatalystX::Declarative::DefaultSuperclassing {
+    with    CatalystX::Declare::DefaultSuperclassing {
 
 
     use MooseX::MethodAttributes ();
-    use aliased 'CatalystX::Declarative::Keyword::Action', 'ActionKeyword';
-    use aliased 'CatalystX::Declarative::Controller::RegisterActionRoles';
-    use aliased 'CatalystX::Declarative::Controller::DetermineActionClass';
+    use aliased 'CatalystX::Declare::Keyword::Action', 'ActionKeyword';
+    use aliased 'CatalystX::Declare::Controller::RegisterActionRoles';
+    use aliased 'CatalystX::Declare::Controller::DetermineActionClass';
 
 
     before add_namespace_customizations (Object $ctx, Str $package) {
