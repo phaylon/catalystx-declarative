@@ -5,7 +5,7 @@ author          'Robert Sedlacek <rs@474.at>';
 license         'perl';
 
 all_from        'lib/CatalystX/Declare.pm';
-readme_from     'lib/CatalystX/Declare.pm', 'clean';
+readme_from     'lib/CatalystX/Declare.pm';
 
 author_tests    'xt';
 
