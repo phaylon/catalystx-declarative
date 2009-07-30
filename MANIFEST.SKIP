@@ -1,0 +1,42 @@
+#
+#   This file is a modified version of the MANIFEST.SKIP file
+#   from DBIx-Class.
+#
+
+# Avoid version control files.
+\bRCS\b
+\bCVS\b
+,v$
+\B\.svn\b
+\B\.git\b
+
+# Avoid Makemaker generated and utility files.
+\bMakefile$
+\bblib
+\bMakeMaker-\d
+\bpm_to_blib$
+\bblibdirs$
+^MANIFEST\.SKIP$
+
+# for developers only :)
+^TODO$
+
+# Avoid temp and backup files.
+~$
+\.tmp$
+\.old$
+\.bak$
+\.swp$
+\.swo$
+\#$
+\b\.#
+
+# avoid OS X finder files
+\.DS_Store$
+
+# Don't ship the last dist we built :)
+\.tar\.gz$
+
+# Skip maint stuff
+^maint/
+^Debian_CPANTS\.txt$

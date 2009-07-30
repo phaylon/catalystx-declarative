@@ -5,7 +5,7 @@ use warnings;
 use FindBin;
 use lib "$FindBin::Bin/lib";
 
-use Test::More tests => 17;
+use Test::More tests => 21;
 use Catalyst::Test 'TestApp';
 
 # simple stuff
@@ -50,3 +50,13 @@ is get('/foo/expose_not_really_here'), 23, 'private action works';
 
 # specify chain target directly via action
 is get('/foo/pointed/beaver'), 'Your beaver is pointed!', 'chain target specified via action';
+
+# an action from a role
+is get('/foo/action_from_ctrl_role'), 'foo/action_from_ctrl_role', 'action from controller role';
+
+# an action body that was modified
+is get('/foo/modifier_target'), 'foo/modifier_target modified', 'action was modified by role';
+is get('/foo/surrounded_target'), 'foo/surrounded_target surrounded', 'action was modified with around by role';
+
+# inline classes
+is get('/foo/inline_class'), 'HELLO', 'inline classes work as expected';

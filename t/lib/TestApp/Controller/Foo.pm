@@ -1,24 +1,32 @@
 use CatalystX::Declare;
 
-role MyActionYes {
-    around match (@args) { $ENV{TESTAPP_ACTIONROLE} ? $self->$orig(@args) : undef }
-}
 
-role TestApp::Try::Aliasing::MyActionNo {
-    around match (@args) { $ENV{TESTAPP_ACTIONROLE} ? undef : $self->$orig(@args) }
-}
-
-class TestApp::Action::Page extends Catalyst::Action {
-
-    around execute ($controller, $ctx, @args) {
-        my $page = $ctx->request->params->{page} || 1;
-        return $self->$orig($controller, $ctx, @args, page => $page);
-    }
-}
-
-controller TestApp::Controller::Foo {
+controller TestApp::Controller::Foo with TestApp::TestRole {
 
     use constant MyActionNo => 'TestApp::Try::Aliasing::MyActionNo';
+
+    class ::Messenger {
+
+        has message => (is => 'rw');
+
+        method format { uc $self->message }
+    }
+
+    role MyActionYes {
+        around match (@args) { $ENV{TESTAPP_ACTIONROLE} ? $self->$orig(@args) : undef }
+    }
+
+    role TestApp::Try::Aliasing::MyActionNo {
+        around match (@args) { $ENV{TESTAPP_ACTIONROLE} ? undef : $self->$orig(@args) }
+    }
+
+    class TestApp::Action::Page extends Catalyst::Action {
+
+        around execute ($controller, $ctx, @args) {
+            my $page = $ctx->request->params->{page} || 1;
+            return $self->$orig($controller, $ctx, @args, page => $page);
+        }
+    }
 
     #
     #   look, a Moose!
@@ -200,5 +208,25 @@ controller TestApp::Controller::Foo {
     #
 
     action pointed <- base ($what) is final { $ctx->response->body("Your $what is pointed!") }
+
+
+    #
+    #   targets for action modifiers
+    #
+
+    action modifier_target under base is final { $ctx->response->body($ctx->action->reverse) }
+
+    action surrounded_target under base is final { 
+        $ctx->response->body(join ' ', $ctx->action->reverse, $ctx->response->body || ());
+    }
+
+
+    #
+    #   inline classes
+    #
+
+    final action inline_class under base {
+        $ctx->response->body( TestApp::Controller::Foo::Messenger->new(message => 'Hello')->format );
+    }
 }
 

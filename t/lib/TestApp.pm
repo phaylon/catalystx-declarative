@@ -1,11 +1,7 @@
-package TestApp;
-use strict;
-use warnings;
+use CatalystX::Declare;
 
-use parent 'Catalyst';
-use Catalyst qw( Static::Simple );
+application TestApp with Static::Simple {
 
-__PACKAGE__->config(name => 'CatalystX::Declare TestApp');
-__PACKAGE__->setup;
+    $CLASS->config(name => 'CatalystX::Declare TestApp');
+}
 
-1;
