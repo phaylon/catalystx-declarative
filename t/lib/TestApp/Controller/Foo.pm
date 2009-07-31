@@ -228,5 +228,14 @@ controller TestApp::Controller::Foo with TestApp::TestRole {
     final action inline_class under base {
         $ctx->response->body( TestApp::Controller::Foo::Messenger->new(message => 'Hello')->format );
     }
+
+
+    #
+    #   validation test
+    #
+
+    final action wants_integer (Int $x) under base {
+        $ctx->response->body($x);
+    }
 }
 

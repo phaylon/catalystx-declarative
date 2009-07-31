@@ -16,6 +16,7 @@ class CatalystX::Declare::Keyword::Action
     use constant STOP_PARSING   => '__MXDECLARE_STOP_PARSING__';
     use constant UNDER_VAR      => '$CatalystX::Declare::SCOPE::UNDER';
 
+    use aliased 'CatalystX::Declare::Action::CatchValidationError';
     use aliased 'MooseX::Method::Signatures::Meta::Method';
     use aliased 'MooseX::MethodAttributes::Role::Meta::Method', 'AttributeRole';
 
@@ -114,16 +115,14 @@ class CatalystX::Declare::Keyword::Action
             );
         }
 
-        my @attributes = map { 
-            join('',
-                $_,
-                ref($attributes{ $_ }) eq 'ARRAY'
-                ? ( scalar(@{ $attributes{ $_ } })
-                    ? sprintf('(%s)', join(' ', @{ $attributes{ $_ } }))
-                    : '' )
-                : "($attributes{ $_ })"
-            );
-        } keys %attributes;
+        my @attributes;
+        for my $attr (keys %attributes) {
+            push @attributes, 
+                map { sprintf '%s(%s)', $attr, $_ }
+                    (ref($attributes{ $attr }) eq 'ARRAY') 
+                    ? @{ $attributes{ $attr } }
+                    : $attributes{ $attr };
+        }
 
         return $ctx->shadow(sub (&) {
             my $class = caller;
@@ -205,6 +204,8 @@ class CatalystX::Declare::Keyword::Action
         $attrs->{Subname}   = $name;
         $attrs->{Signature} = $proto;
         $attrs->{Action}    = [];
+
+        push @{ $attrs->{CatalystX_Declarative_ActionRoles} ||= [] }, CatchValidationError;
 
         if (defined $CatalystX::Declare::SCOPE::UNDER) {
             $attrs->{Chained} ||= $CatalystX::Declare::SCOPE::UNDER;
@@ -540,6 +541,12 @@ an array as a variable:
 
     # /find/some/deep/path/spec
     final action find (@path) under '/';
+
+=head2 Validation
+
+Currently, when the arguments do not fit the signature because of a L<Moose>
+validation error, the response body will be set to C<Bad Request> and the
+status to C<400>.
 
 =head2 Actions and Method Modifiers
 

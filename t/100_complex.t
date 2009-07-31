@@ -61,5 +61,9 @@ is get('/foo/surrounded_target'), 'foo/surrounded_target surrounded', 'action wa
 # inline classes
 is get('/foo/inline_class'), 'HELLO', 'inline classes work as expected';
 
+# error handling
+is get('/foo/wants_integer/butdoesntgetone'), 'Bad Request', 'validation error causes bad request error';
+
+
 
 done_testing;
