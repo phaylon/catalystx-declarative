@@ -340,7 +340,7 @@ CatalystX::Declare::Keyword::Action - Declare Catalyst Actions
 
         # chain base action with path part setting of ''
         # body-less actions don't do anything by themselves
-        action base as '';
+        action base as '' under '/';
 
         # simple end-point action
         action controller_class is final under base {
@@ -399,7 +399,7 @@ The simplest possible declaration is
 
     action foo;
 
-This would define a chain-part action chained to C</> with the name C<foo>
+This would define a chain-part action chained to nothing with the name C<foo>
 and no arguments. Since it isn't followed by a block, the body of the action
 will be empty.
 
@@ -420,18 +420,20 @@ the action itself (or more correctly: to whatever Catalyst defaults).
 
 To change that, use the C<as> option:
 
-    action base      as '';             # <empty>
-    action something as 'foo/bar';      # foo/bar
-    action barely    as bareword;       # bareword
+    under something {
+        action base      as '';             # <empty>
+        action something as 'foo/bar';      # foo/bar
+        action barely    as bareword;       # bareword
+    }
 
 =head2 Chaining Actions
 
 Currently, L<CatalystX::Declare> is completely based on the concept of
 L<chained actions|Catalyst::DispatchType::Chained>. Every action you declare is
-chained to something. No base specification means you chain to the root. You 
-can specify the action you want to chain to with the C<under> option:
+chained or private. You can specify the action you want to chain to with the 
+C<under> option:
 
-    action foo;                     # chained to /
+    action foo;                     # chained to nothing
     action foo under '/';           # also chained to /
     action foo under bar;           # chained to the local bar action
     action foo under '/bar/baz';    # chained to baz in /bar
@@ -448,7 +450,7 @@ You can also use the C<under> keyword for a single action. This is useful if
 you want to highlight a single action with a significant diversion from what
 is to be expected:
 
-    action base;
+    action base under '/';
 
     under '/the/sink' is final action foo;
 
@@ -468,7 +470,7 @@ By default all actions are chain-parts, not end-points. If you want an action
 to be picked up as end-point and available via a public path, you have to say
 so explicitely by  using the C<is final> option:
 
-    action base;
+    action base under '/';
     action foo under base is final;   # /base/foo
 
 You can also drop the C<is> part of the C<is final> option if you want:
@@ -478,13 +480,13 @@ You can also drop the C<is> part of the C<is final> option if you want:
 You can make end-points more visually distinct by using the C<final> keyword
 instead of the option:
 
-    action base;
+    action base under '/';
     final action foo under base;      # /base/foo
 
 And of course, the C<final>, C<under> and C<action> keywords can be used in
 combination whenever needed:
 
-    action base as '';
+    action base as '' under '/';
 
     under base {
 
@@ -502,7 +504,7 @@ combination whenever needed:
 There is also one shorthand alternative for declaring chain targets. You can
 specify an action after a C<E<lt>-> following the action name:
 
-    action base;
+    action base under '/';
     final action foo <- base;       # /base/foo
 
 =head2 Arguments
@@ -520,24 +522,24 @@ If you are using the shorthand definition, the signature follows the chain
 target:
 
     # /foo/*
-    final action foo <- base ($x) { ... }
+    final action foo <- base ($x) under '/' { ... }
 
 Parameters may be specified on chain-parts and end-points:
 
     # /base/*/foo/*
-    action base (Str $lang);
+    action base (Str $lang) under '/';
     final action page (Int $page_num) under base;
 
 Named parameters will be populated with the values in the query parameters:
 
     # /view/17/?page=3
-    final action view (Int $id, Int :$page = 1);
+    final action view (Int $id, Int :$page = 1) under '/';
 
 Your end-points can also take an unspecified amount of arguments by specifying
 an array as a variable:
 
     # /find/some/deep/path/spec
-    final action find (@path);
+    final action find (@path) under '/';
 
 =head2 Actions and Method Modifiers
 
@@ -568,7 +570,7 @@ consume the C<RichBase> role declared above:
     controller MyApp::Web::Controller::Foo
         with   MyApp::Web::Controller::RichBase {
 
-        action base as '';
+        action base as '' under '/';
 
         action show, final under base { 
             $ctx->response->body(

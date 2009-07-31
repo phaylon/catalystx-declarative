@@ -55,7 +55,7 @@ CatalystX::Declare - EXPERIMENTAL Declarative Syntax for Catalyst Applications
         method _build_welcome_message { 'Welcome' }
         
         
-        action base as '';
+        action base under '/' as '';
         
         under base {
             
@@ -140,7 +140,7 @@ declarations. This allows for constructs such as:
 
     controller MyApp::Web::Controller::Baz {
 
-        final action qux { 
+        final action qux under '/' { 
             $ctx->response->body(Foo->new->bar) 
         }
     }
