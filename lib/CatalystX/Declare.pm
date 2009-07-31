@@ -93,6 +93,8 @@ CatalystX::Declare - EXPERIMENTAL Declarative Syntax for Catalyst Applications
 
 =head1 DESCRIPTION
 
+B<This module is EXPERIMENTAL>
+
 This module provides a declarative syntax for L<Catalyst|Catalyst::Runtime> 
 applications. Its main focus is currently on common and repetitious parts of
 the application, such as the application class itself, controllers, and
