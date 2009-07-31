@@ -136,6 +136,17 @@ controller TestApp::Controller::Foo with TestApp::TestRole {
                 action stream is final {
                     $ctx->response->body($ctx->action->reverse);
                 }
+
+                action param (Int $x) { 
+                    $ctx->stash(param_x => $x);
+                }
+
+                under param {
+
+                    final action road (Int $y) {
+                        $ctx->response->body($ctx->stash->{param_x} + $y);
+                    }
+                }
             }
         }
     }

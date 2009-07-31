@@ -85,6 +85,10 @@ class CatalystX::Declare::Keyword::Action
 
         AttributeRole->meta->apply($method);
 
+        my $count = $self->_count_positional_arguments($method);
+        $attributes{CaptureArgs} = $count
+            if defined $count;
+
         $_->($method)
             for @populators;
 
@@ -118,7 +122,7 @@ class CatalystX::Declare::Keyword::Action
         my @attributes;
         for my $attr (keys %attributes) {
             push @attributes, 
-                map { sprintf '%s(%s)', $attr, $_ }
+                map { sprintf '%s%s', $attr, defined($_) ? sprintf('(%s)', $_) : '' }
                     (ref($attributes{ $attr }) eq 'ARRAY') 
                     ? @{ $attributes{ $attr } }
                     : $attributes{ $attr };
@@ -234,8 +238,7 @@ class CatalystX::Declare::Keyword::Action
             my $method = shift;
 
             if ($what eq any qw( end endpoint final )) {
-                my $count = $self->_count_positional_arguments($method);
-                $attrs->{Args} = defined($count) ? $count : '';
+                $attrs->{Args} = delete $attrs->{CaptureArgs};
             }
             elsif ($what eq 'private') {
                 $attrs->{Private} = [];
@@ -263,10 +266,6 @@ class CatalystX::Declare::Keyword::Action
 
         return sub {
             my $method = shift;
-
-            my $count = $self->_count_positional_arguments($method);
-            $attrs->{CaptureArgs} = $count
-                if defined $count;
         };
     }
 
