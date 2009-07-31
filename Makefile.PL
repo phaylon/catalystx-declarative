@@ -23,7 +23,7 @@ requires        'MooseX::Types',            '0.16';
 
 test_requires   'Catalyst::Test';
 test_requires   'FindBin';
-test_requires   'Test::More',               '0.86';
+test_requires   'Test::More',               '0.92';
 
 repository      'http://github.com/phaylon/catalystx-declarative/tree/master';
 bugtracker      'http://github.com/phaylon/catalystx-declarative/issues';

@@ -5,7 +5,7 @@ use warnings;
 use FindBin;
 use lib "$FindBin::Bin/lib";
 
-use Test::More tests => 21;
+use Test::More; 
 use Catalyst::Test 'TestApp';
 
 # simple stuff
@@ -60,3 +60,6 @@ is get('/foo/surrounded_target'), 'foo/surrounded_target surrounded', 'action wa
 
 # inline classes
 is get('/foo/inline_class'), 'HELLO', 'inline classes work as expected';
+
+
+done_testing;

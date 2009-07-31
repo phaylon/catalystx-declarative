@@ -56,8 +56,7 @@ Catalyst's C<setup> method. This hijacking is proably going away someday since
 in the future plugins will be actual roles.
 
 You don't have to call the C<setup> method yourself, this will be done by the
-handler after the body has been run. If you need to run code specifically before
-or after the C<setup> method has been run, you can always use method modifiers.
+handler after the body has been run.
 
 =head1 SUPERCLASSES
 
