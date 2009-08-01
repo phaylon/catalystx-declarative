@@ -13,7 +13,7 @@ class CatalystX::Declare extends MooseX::Declare is dirty {
     around keywords {
         $self->$orig,
         ControllerKeyword->new(identifier => 'controller'),
-        RoleKeyword->new(identifier => 'controller_role'),
+        RoleKeyword->new(identifier => 'component_role'),
         ApplicationKeyword->new(identifier => 'application'),
     }
 }
@@ -69,7 +69,7 @@ CatalystX::Declare - EXPERIMENTAL Declarative Syntax for Catalyst Applications
 
     use CatalystX::Declare;
 
-    controller_role MyApp::Web::ControllerRole::Bar {
+    component_role MyApp::Web::ControllerRole::Bar {
 
         use MyApp::Types qw( Username );
 

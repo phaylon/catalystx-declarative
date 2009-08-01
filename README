@@ -43,7 +43,7 @@ SYNOPSIS
   Roles
         use CatalystX::Declare;
 
-        controller_role MyApp::Web::ControllerRole::Bar {
+        component_role MyApp::Web::ControllerRole::Bar {
 
             use MyApp::Types qw( Username );
 

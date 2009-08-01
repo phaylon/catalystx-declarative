@@ -558,7 +558,7 @@ C<base> action:
 
     use CatalystX::Declare;
 
-    controller_role MyApp::Web::ControllerRole::RichBase {
+    component_role MyApp::Web::ControllerRole::RichBase {
 
         before base (Object $ctx) {
             $ctx->stash(something => $ctx->model('Item'));

@@ -1,6 +1,6 @@
 use CatalystX::Declare;
 
-controller_role TestApp::TestRole {
+component_role TestApp::TestRole {
 
     method something_from_the_role { 23 }
 

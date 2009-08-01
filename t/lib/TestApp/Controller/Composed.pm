@@ -1,6 +1,6 @@
 use CatalystX::Declare;
 
-controller_role TestApp::ControllerRole::Composed {
+component_role TestApp::ControllerRole::Composed {
     method composed_method { }
     action composed_action;
 }
