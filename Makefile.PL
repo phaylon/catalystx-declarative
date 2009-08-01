@@ -7,7 +7,8 @@ license         'perl';
 all_from        'lib/CatalystX/Declare.pm';
 readme_from     'lib/CatalystX/Declare.pm';
 
-author_tests    'xt';
+tests           't/*.t';
+author_tests    'xt', 'examples/MyApp-Web/t';
 
 requires        'Carp',                         '1.08';
 requires        'Class::Inspector',             '1.24';
