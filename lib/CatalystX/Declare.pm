@@ -8,7 +8,7 @@ class CatalystX::Declare extends MooseX::Declare is dirty {
 
     clean;
 
-    our $VERSION = '0.001';
+    our $VERSION = '0.002';
 
     around keywords {
         $self->$orig,
