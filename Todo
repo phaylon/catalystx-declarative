@@ -9,7 +9,3 @@ Organisational:
 
 Features:
     * Implement optional view, model and component keywords
-
-MooseX::Declare:
-    * Allow for optinoal_keywords
-    * Implement import handling, e.g. use MX:Declare qw( -class +view )
