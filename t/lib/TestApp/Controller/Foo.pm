@@ -248,5 +248,6 @@ controller TestApp::Controller::Foo with TestApp::TestRole {
     final action wants_integer (Int $x) under base {
         $ctx->response->body($x);
     }
+
 }
 

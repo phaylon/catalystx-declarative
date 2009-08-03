@@ -28,6 +28,7 @@ requires        'MooseX::Method::Signatures',   '0.16';
 requires        'FindBin';
 
 test_requires   'Test::More',                   '0.92';
+test_requires   'Test::Output',                 '0.12';
 test_requires   'Catalyst::Test';
 test_requires   'FindBin';
 

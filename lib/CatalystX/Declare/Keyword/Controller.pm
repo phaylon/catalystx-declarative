@@ -9,6 +9,7 @@ class CatalystX::Declare::Keyword::Controller
     use aliased 'CatalystX::Declare::Keyword::Action', 'ActionKeyword';
     use aliased 'CatalystX::Declare::Controller::RegisterActionRoles';
     use aliased 'CatalystX::Declare::Controller::DetermineActionClass';
+    use aliased 'CatalystX::Declare::Controller::Meta::TypeConstraintMapping';
 
     use Data::Dump qw( pp );
 
@@ -18,6 +19,10 @@ class CatalystX::Declare::Keyword::Controller
         MooseX::MethodAttributes->init_meta(for_class => $package);
         $ctx->add_preamble_code_parts(
             'use CLASS',
+            ['BEGIN',
+                sprintf('Class::MOP::load_class(q(%s))', TypeConstraintMapping),
+                sprintf('%s->meta->apply(%s->meta->meta)', TypeConstraintMapping, $package),
+            ],
             sprintf('with qw( %s )', join ' ',
                 RegisterActionRoles,
                 DetermineActionClass,
