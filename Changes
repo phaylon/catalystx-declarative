@@ -1,4 +1,5 @@
 [0.003] ...
+    - Added File::Find::Rule(::Perl) to build_requires
 
 [0.002] Mon Aug  3 17:30:23 CEST 2009
     - Fixed Changes, hah!
