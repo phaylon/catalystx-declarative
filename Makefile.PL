@@ -23,14 +23,17 @@ requires        'MooseX::AttributeHelpers',     '0.16';
 requires        'MooseX::Declare',              '0.23';
 requires        'MooseX::MethodAttributes',     '0.15';
 requires        'MooseX::Types',                '0.16';
-requires        'TryCatch',                     '1.001001';
 requires        'MooseX::Method::Signatures',   '0.16';
+requires        'TryCatch',                     '1.001001';
 requires        'FindBin';
 
 test_requires   'Test::More',                   '0.92';
 test_requires   'Test::Output',                 '0.12';
 test_requires   'Catalyst::Test';
 test_requires   'FindBin';
+
+build_requires  'File::Find::Rule::Perl',       '1.09';
+build_requires  'File::Find::Rule';
 
 repository      'http://github.com/phaylon/catalystx-declarative/tree/master';
 bugtracker      'http://github.com/phaylon/catalystx-declarative/issues';
