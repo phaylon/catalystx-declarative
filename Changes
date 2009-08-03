@@ -1,3 +1,5 @@
+[0.004] ...
+
 [0.003] Mon Aug  3 21:38:42 CEST 2009
     - Added File::Find::Rule(::Perl) to configure_requires
 
