@@ -1,9 +1,7 @@
 use MooseX::Declare;
 
-class CatalystX::Declare::Keyword::Controller 
-    extends MooseX::Declare::Syntax::Keyword::Class
-    with    CatalystX::Declare::DefaultSuperclassing {
-
+class CatalystX::Declare::Keyword::Controller
+    extends CatalystX::Declare::Keyword::Component {
 
     use MooseX::MethodAttributes ();
     use aliased 'CatalystX::Declare::Keyword::Action', 'ActionKeyword';
@@ -17,8 +15,8 @@ class CatalystX::Declare::Keyword::Controller
     before add_namespace_customizations (Object $ctx, Str $package) {
 
         MooseX::MethodAttributes->init_meta(for_class => $package);
+
         $ctx->add_preamble_code_parts(
-            'use CLASS',
             ['BEGIN',
                 sprintf('Class::MOP::load_class(q(%s))', TypeConstraintMapping),
                 sprintf('%s->meta->apply(%s->meta->meta)', TypeConstraintMapping, $package),
@@ -34,6 +32,18 @@ class CatalystX::Declare::Keyword::Controller
 
     method auto_make_immutable { 0 }
 
+    around default_inner () {
+
+        my @modifiers = qw( ); 
+
+        return [
+            ( grep { my $id = $_->identifier; not grep { $id eq $_ } @modifiers } @{ $self->$orig() || [] } ),
+            ActionKeyword->new(identifier => 'action'),
+            ActionKeyword->new(identifier => 'under'),
+            ActionKeyword->new(identifier => 'final'),
+        ];
+    }
+
     method add_with_option_customizations (Object $ctx, $package, ArrayRef $roles, HashRef $options) {
 
         $ctx->add_cleanup_code_parts(
@@ -46,18 +56,6 @@ class CatalystX::Declare::Keyword::Controller
         $ctx->add_cleanup_code_parts(
             sprintf '%s->meta->make_immutable', $package
         ) unless $options->{is}{mutable};
-    }
-
-    around default_inner () {
-
-        my @modifiers = qw( ); 
-
-        return [
-            ( grep { my $id = $_->identifier; not grep { $id eq $_ } @modifiers } @{ $self->$orig() || [] } ),
-            ActionKeyword->new(identifier => 'action'),
-            ActionKeyword->new(identifier => 'under'),
-            ActionKeyword->new(identifier => 'final'),
-        ];
     }
 }
 
@@ -92,7 +90,9 @@ CatalystX::Declare::Keyword::Controller - Declare Catalyst Controllers
 =head1 DESCRIPTION
 
 This handler module allows the declaration of Catalyst controllers. The
-C<controller> keyword is an extension of L<MooseX::Declare/class> with all the
+C<controller> keyword is an extension of the 
+L<CatalystX::Declare::Keyword::Component>, which in turn is an extension 
+of L<MooseX::Declare/class> with all the
 bells and whistles, including C<extends>, C<with>, C<method> and modifier
 declarations.
 
@@ -108,15 +108,7 @@ usual.
 
 =over
 
-=item L<MooseX::Declare::Syntax::Keyword::Class>
-
-=back
-
-=head1 ROLES
-
-=over
-
-=item L<CatalystX::Declare::DefaultSuperclassing>
+=item L<CatalystX::Declare::Keyword::Component>
 
 =back
 
@@ -130,7 +122,7 @@ developing L<CatalystX::Declare>, you should not be concerned with them.
     Object->add_namespace_customizations (Object $ctx, Str $package)
 
 This method modifier will initialise the controller with 
-L<MooseX::MethodAttributes>, import L<CLASS> and add the 
+L<MooseX::MethodAttributes> and add the 
 L<CatalystX::Declare::Controller::RegisterActionRoles> and
 L<CatalystX::Declare::Controller::DetermineActionClass> controller roles
 before calling the original.
@@ -141,14 +133,6 @@ before calling the original.
 
 Returns L<Catalyst::Controller> as the default superclass for all declared
 controllers.
-
-=head2 auto_make_immutable
-
-    Bool Object->auto_make_immutable ()
-
-Returns C<0>, indicating that L<MooseX::Declare> should not make this class
-immutable by itself. We will do that in the L</add_with_option_customizations>
-method ourselves.
 
 =head2 add_with_option_customizations
 
@@ -167,6 +151,14 @@ together.
 This method will also add a callback to make the controller immutable to the
 cleanup code parts unless C<is mutable> was specified.
 
+=head2 auto_make_immutable
+
+    Bool Object->auto_make_immutable ()
+
+Returns C<0>, indicating that L<MooseX::Declare> should not make this class
+immutable by itself. We will do that in the L</add_with_option_customizations>
+method ourselves.
+
 =head2 default_inner
 
     ArrayRef[Object] Object->default_inner ()
@@ -183,6 +175,8 @@ C<under> and C<final> identifiers.
 =item L<CatalystX::Declare>
 
 =item L<CatalystX::Declare::Keyword::Action>
+
+=item L<CatalystX::Declare::Keyword::Component>
 
 =item L<MooseX::Declare/class>
 

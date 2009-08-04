@@ -2,6 +2,8 @@ use MooseX::Declare;
 
 class CatalystX::Declare extends MooseX::Declare is dirty {
 
+    use aliased 'CatalystX::Declare::Keyword::Model',       'ModelKeyword';
+    use aliased 'CatalystX::Declare::Keyword::View',        'ViewKeyword';
     use aliased 'CatalystX::Declare::Keyword::Controller',  'ControllerKeyword';
     use aliased 'CatalystX::Declare::Keyword::Role',        'RoleKeyword';
     use aliased 'CatalystX::Declare::Keyword::Application', 'ApplicationKeyword';
@@ -12,9 +14,11 @@ class CatalystX::Declare extends MooseX::Declare is dirty {
 
     around keywords {
         $self->$orig,
-        ControllerKeyword->new(identifier => 'controller'),
-        RoleKeyword->new(identifier => 'controller_role'),
-        ApplicationKeyword->new(identifier => 'application'),
+        ControllerKeyword->new(     identifier => 'controller'      ),
+        RoleKeyword->new(           identifier => 'controller_role' ),
+        ApplicationKeyword->new(    identifier => 'application'     ),
+        ViewKeyword->new(           identifier => 'view'            ),
+        ModelKeyword->new(          identifier => 'model'           ),
     }
 }
 
@@ -34,6 +38,10 @@ CatalystX::Declare - EXPERIMENTAL Declarative Syntax for Catalyst Applications
     
         $CLASS->config(name => 'My Declarative Web Application');
     }
+
+See also: 
+L<CatalystX::Declare::Keyword::Application>, 
+L<MooseX::Declare/class>
 
 =head2 Controllers
 
@@ -65,6 +73,12 @@ CatalystX::Declare - EXPERIMENTAL Declarative Syntax for Catalyst Applications
         }
     }
 
+See also: 
+L<CatalystX::Declare::Keyword::Controller>, 
+L<CatalystX::Declare::Keyword::Action>, 
+L<CatalystX::Declare::Keyword::Component>, 
+L<MooseX::Declare/class>
+
 =head2 Roles
 
     use CatalystX::Declare;
@@ -90,6 +104,45 @@ CatalystX::Declare - EXPERIMENTAL Declarative Syntax for Catalyst Applications
             $ctx->response->body('Hugs to ' . $name);
         }
     }
+
+See also: 
+L<CatalystX::Declare::Keyword::Role>, 
+L<CatalystX::Declare::Keyword::Action>, 
+L<MooseX::Declare/class>
+
+=head2 Views
+
+    use CatalystX::Declare;
+
+    view MyApp::Web::View::TT
+        extends Catalyst::View::TT {
+
+        $CLASS->config(
+            TEMPLATE_EXTENSION => '.html',
+        );
+    }
+
+See also: 
+L<CatalystX::Declare::Keyword::View>, 
+L<CatalystX::Declare::Keyword::Component>, 
+L<MooseX::Declare/class>
+
+=head2 Models
+
+    use CatalystX::Declare;
+
+    model MyApp::Web::Model::DBIC::Schema
+        extends Catalyst::Model::DBIC::Schema {
+
+        $CLASS->config(
+            schema_class => 'MyApp::Schema',
+        );
+    }
+
+See also: 
+L<CatalystX::Declare::Keyword::Model>, 
+L<CatalystX::Declare::Keyword::Component>, 
+L<MooseX::Declare/class>
 
 =head1 DESCRIPTION
 
@@ -118,11 +171,15 @@ syntax extensions:
 
 =item L<CatalystX::Declare::Keyword::Application>
 
-=item L<CatalystX::Declare::Keyword::Controller>
-
 =item L<CatalystX::Declare::Keyword::Action>
 
+=item L<CatalystX::Declare::Keyword::Controller>
+
 =item L<CatalystX::Declare::Keyword::Role>
+
+=item L<CatalystX::Declare::Keyword::View>
+
+=item L<CatalystX::Declare::Keyword::Model>
 
 =back
 
