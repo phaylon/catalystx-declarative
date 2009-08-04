@@ -1,7 +1,7 @@
 use CatalystX::Declare;
 
 # almost like a normal Moose role
-component_role MyApp::Web::ControllerRole::RenderView {
+controller_role MyApp::Web::ControllerRole::RenderView {
 
     # we can use the whole Moose infrastructure
     use MooseX::Types::Moose qw( Str );

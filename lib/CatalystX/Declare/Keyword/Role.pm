@@ -39,7 +39,7 @@ CatalystX::Declare::Keyword::Role - Declare Catalyst Controller Roles
 
     use CatalystX::Declare;
 
-    component_role MyApp::Web::ControllerRole::Foo {
+    controller_role MyApp::Web::ControllerRole::Foo {
 
         method provided_method { ... }
 
@@ -50,7 +50,7 @@ CatalystX::Declare::Keyword::Role - Declare Catalyst Controller Roles
 
 =head1 DESCRIPTION
 
-This handler provides the C<component_role> keyword. It is an extension of the
+This handler provides the C<controller_role> keyword. It is an extension of the
 L<MooseX::Declare::Syntax::Keyword::Role> handler. Like with declared 
 controllers, the C<method> keyword and the modifiers are provided. For details
 on the syntax for action declarations have a look at
