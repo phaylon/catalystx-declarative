@@ -11,6 +11,9 @@ SYNOPSIS
             $CLASS->config(name => 'My Declarative Web Application');
         }
 
+    See also: CatalystX::Declare::Keyword::Application, "class" in
+    MooseX::Declare
+
   Controllers
         use CatalystX::Declare;
 
@@ -40,6 +43,10 @@ SYNOPSIS
             }
         }
 
+    See also: CatalystX::Declare::Keyword::Controller,
+    CatalystX::Declare::Keyword::Action,
+    CatalystX::Declare::Keyword::Component, "class" in MooseX::Declare
+
   Roles
         use CatalystX::Declare;
 
@@ -65,6 +72,37 @@ SYNOPSIS
             }
         }
 
+    See also: CatalystX::Declare::Keyword::Role,
+    CatalystX::Declare::Keyword::Action, "class" in MooseX::Declare
+
+  Views
+        use CatalystX::Declare;
+
+        view MyApp::Web::View::TT
+            extends Catalyst::View::TT {
+
+            $CLASS->config(
+                TEMPLATE_EXTENSION => '.html',
+            );
+        }
+
+    See also: CatalystX::Declare::Keyword::View,
+    CatalystX::Declare::Keyword::Component, "class" in MooseX::Declare
+
+  Models
+        use CatalystX::Declare;
+
+        model MyApp::Web::Model::DBIC::Schema
+            extends Catalyst::Model::DBIC::Schema {
+
+            $CLASS->config(
+                schema_class => 'MyApp::Schema',
+            );
+        }
+
+    See also: CatalystX::Declare::Keyword::Model,
+    CatalystX::Declare::Keyword::Component, "class" in MooseX::Declare
+
 DESCRIPTION
     This module is EXPERIMENTAL
 
@@ -86,9 +124,11 @@ DESCRIPTION
     with this module's syntax extensions:
 
     CatalystX::Declare::Keyword::Application
-    CatalystX::Declare::Keyword::Controller
     CatalystX::Declare::Keyword::Action
+    CatalystX::Declare::Keyword::Controller
     CatalystX::Declare::Keyword::Role
+    CatalystX::Declare::Keyword::View
+    CatalystX::Declare::Keyword::Model
 
     Things like models, views, roles for request or response objects, can be
     built declaratively with MooseX::Declare, which is used to additionally
