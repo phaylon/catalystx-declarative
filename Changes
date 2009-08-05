@@ -1,4 +1,6 @@
-[0.004] ...
+[0.004] Wed Aug  5 22:40:58 CEST 2009
+    - Added model and view keywords
+    - More configure_requires fixes
 
 [0.003] Mon Aug  3 21:38:42 CEST 2009
     - Added File::Find::Rule(::Perl) to configure_requires
