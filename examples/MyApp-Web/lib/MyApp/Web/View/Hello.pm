@@ -1,7 +1,7 @@
-use MooseX::Declare;
+use CatalystX::Declare;
 
 # nothing special here, so it's just normal MooseX::Declare syntax
-class MyApp::Web::View::Hello extends Catalyst::View {
+view MyApp::Web::View::Hello {
 
     # the process method is the standard method that is forwarded to
     method process (Object $ctx) {

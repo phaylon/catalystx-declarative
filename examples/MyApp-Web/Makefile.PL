@@ -6,7 +6,7 @@ use inc::Module::Install;
 name 'MyApp-Web';
 all_from 'lib/MyApp/Web.pm';
 
-requires 'CatalystX::Declare' => '0.001';
+requires 'CatalystX::Declare' => '0.004';
 requires 'Catalyst::Runtime' => '5.80007';
 requires 'Catalyst::Plugin::ConfigLoader';
 requires 'Catalyst::Plugin::Static::Simple';
