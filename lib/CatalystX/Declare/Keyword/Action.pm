@@ -544,9 +544,10 @@ an array as a variable:
 =head2 Validation
 
 Currently, when the arguments do not fit the signature because of a L<Moose>
-validation error, the response body will be set to C<Bad Request> and the
-status to C<400>. This only applies when debug mode is off. If it is turned on,
-the error message will be prefixed with C<BAD REQUEST: >.
+validation error, the response body will be set to C<Not found> and the
+status to C<404>. This only applies when debug mode is off. If it is turned on,
+the error message will be prefixed with C<BAD REQUEST: >. The action will 
+automatically detach after a failed signature validation.
 
 =head2 Actions and Method Modifiers
 
