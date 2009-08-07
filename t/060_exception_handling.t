@@ -18,9 +18,9 @@ my $modget = sub { get(join '/', '/sub_errors/signature_error_on_foo_modify', @_
 
 local *TestApp::debug = sub { 0 };
 
-is $get->('foo'),       'Bad Request', 'detected action signature error';
-is $subget->('foo'),    'Bad Request', 'detected action signature error (child)';
-is $modget->('foo'),    'Bad Request', 'detected action signature error (modified)';
+is $get->('foo'),       'Not found', 'detected action signature error';
+is $subget->('foo'),    'Not found', 'detected action signature error (child)';
+is $modget->('foo'),    'Not found', 'detected action signature error (modified)';
 
 stderr_like {
 

@@ -20,8 +20,8 @@ role CatalystX::Declare::Action::CatchValidationError {
                 $ctx->error("BAD REQUEST: $error");
             }
             else {
-                $ctx->response->body( 'Bad Request' );
-                $ctx->response->status( 400 );
+                $ctx->response->body( 'Not found' );
+                $ctx->response->status( 404 );
             }
             
             $ctx->detach;

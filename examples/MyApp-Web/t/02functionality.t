@@ -15,13 +15,13 @@ is get('/calc/add/3/4/5'), 12, 'addition';
 is get('/calc/multiply/2/3/4'), 24, 'multiplication';
 
 is get('/calc/unknownthingy/3/4/5'), 'unknown operator', 'unknown operator';
-is get('/calc/add/3/f/5'), 'Bad Request', 'bad request';
+is get('/calc/add/3/f/5'), 'Not found', 'bad request';
 
 like get('/foo/hello'), qr/root controller role/, 'root controller role';
 
 is get('/foo/2/3/add'), 5, 'add two';
 is get('/foo/2/3/multiply'), 6, 'multiply two';
 
-is get('/foo/2/f/add'), 'Bad Request', 'bad request capture args';
+is get('/foo/2/f/add'), 'Not found', 'bad request capture args';
 
 done_testing;
