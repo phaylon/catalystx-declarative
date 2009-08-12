@@ -1,5 +1,11 @@
 use inc::Module::Install;
 
+# required for authors:
+#   Module::Install::ProvidesClass >= 0.000001_99
+#   Module::Install::AutoManifest
+#   Module::Install::ReadmeFromPod
+#   Module::Install::AuthorTests
+
 name            'CatalystX-Declare';
 author          'Robert Sedlacek <rs@474.at>';
 license         'perl';
