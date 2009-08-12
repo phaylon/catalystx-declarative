@@ -1,5 +1,6 @@
 [0.005] ...
     - action signature errors now lead to 404's, not 400's
+    - prereq D:D version that fixed method invocation issue
 
 [0.004] Wed Aug  5 22:40:58 CEST 2009
     - Added model and view keywords
