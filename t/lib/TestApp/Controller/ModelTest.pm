@@ -3,7 +3,7 @@ use CatalystX::Declare;
 controller TestApp::Controller::ModelTest {
 
     method find_model (Object $ctx) {
-        return $ctx->component('Model::TestModel');
+        return $ctx->model('TestModel');
     }
 
 

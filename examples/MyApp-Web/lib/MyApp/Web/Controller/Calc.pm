@@ -8,7 +8,7 @@ controller MyApp::Web::Controller::Calc {
 
     # we fetch our operator from the model in an action attached to the base
     action operator <- base (Str $op) as '' {
-        $ctx->stash(operator => $ctx->component('Model::Calc')->op($op));
+        $ctx->stash(operator => $ctx->model('Calc')->op($op));
     }
 
     # here we know we have an operator and run it against the integers we got
