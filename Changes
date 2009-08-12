@@ -1,3 +1,5 @@
+[0.006] ...
+
 [0.005] Wed Aug 12 22:51:42 CEST 2009
     - action signature errors now lead to 404's, not 400's
     - prereq D:D version that fixed method invocation issue
