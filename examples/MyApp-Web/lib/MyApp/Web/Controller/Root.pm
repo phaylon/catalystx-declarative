@@ -6,7 +6,7 @@ controller MyApp::Web::Controller::Root
       with MyApp::Web::ControllerRole::RenderView {
 
     # $CLASS is provided by CLASS.pm
-    $CLASS->config->{namespace} = '';
+    $CLASS->config(namespace => '');
 
 
     # this is the common root action for all other actions

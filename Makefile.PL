@@ -24,7 +24,7 @@ requires        'parent',                           '0.221';
 requires        'Data::Dump',                       '1.14';
 requires        'Catalyst',                         '5.80007';
 requires        'CLASS',                            '1.00';
-requires        'Devel::Declare',                   '0.005010';
+requires        'Devel::Declare',                   '0.005011';
 requires        'Moose',                            '0.88';
 requires        'MooseX::AttributeHelpers',         '0.16';
 requires        'MooseX::Declare',                  '0.23';
