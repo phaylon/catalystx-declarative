@@ -39,7 +39,7 @@ class CatalystX::Declare::Keyword::Controller
 
     method auto_make_immutable { 0 }
 
-    around default_inner () {
+    around default_inner {
 
         my @modifiers = qw( ); 
 

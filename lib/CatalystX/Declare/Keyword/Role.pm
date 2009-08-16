@@ -16,7 +16,7 @@ class CatalystX::Declare::Keyword::Role
         );
     }
 
-    around default_inner () {
+    around default_inner {
 
         my @modifiers = qw( );
 
