@@ -13,11 +13,12 @@ role CatalystX::Declare::Controller::RegisterActionRoles
         for my $role (@action_roles) {
             my $fq_role = $self->_qualify_class_name(ActionRole => $role);
 
-            Class::MOP::load_class($role);
-            $role->meta->apply($action);
+            Class::MOP::load_class($fq_role);
+            $fq_role->meta->apply($action);
         }
 
         return $action;
     }
 }
 
+1;

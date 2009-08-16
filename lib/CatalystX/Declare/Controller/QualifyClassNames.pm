@@ -34,3 +34,5 @@ role CatalystX::Declare::Controller::QualifyClassNames {
             ;
     }
 }
+
+1;

@@ -18,3 +18,4 @@ role CatalystX::Declare::Controller::DetermineActionClass
     }
 }
 
+1;

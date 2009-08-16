@@ -1,13 +1,14 @@
 use MooseX::Declare;
+use Catalyst::Controller;
 
 class CatalystX::Declare::Keyword::Controller
     extends CatalystX::Declare::Keyword::Component {
 
     use MooseX::MethodAttributes ();
     use aliased 'CatalystX::Declare::Keyword::Action', 'ActionKeyword';
-    use aliased 'CatalystX::Declare::Controller::RegisterActionRoles';
     use aliased 'CatalystX::Declare::Controller::DetermineActionClass';
     use aliased 'CatalystX::Declare::Controller::Meta::TypeConstraintMapping';
+    use aliased 'CatalystX::Declare::Controller::RegisterActionRoles';
 
     use Data::Dump qw( pp );
 
@@ -21,6 +22,12 @@ class CatalystX::Declare::Keyword::Controller
                 sprintf('Class::MOP::load_class(q(%s))', TypeConstraintMapping),
                 sprintf('%s->meta->apply(%s->meta->meta)', TypeConstraintMapping, $package),
             ],
+        );
+    }
+
+    after add_extends_option_customizations (Object $ctx, Str $package, $superclasses, $options) {
+
+        $ctx->add_scope_code_parts(
             sprintf('with qw( %s )', join ' ',
                 RegisterActionRoles,
                 DetermineActionClass,
