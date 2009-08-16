@@ -53,11 +53,13 @@ class CatalystX::Declare::Keyword::Controller
 
     method add_with_option_customizations (Object $ctx, $package, ArrayRef $roles, HashRef $options) {
 
+        $package = $ctx->qualify_namespace($package);
+
         $ctx->add_cleanup_code_parts(
             map {
                 sprintf('Class::MOP::load_class(%s)', pp "$_"),
                 sprintf('%s->meta->apply(%s->meta)', $_, $package),
-            } @$roles
+            } map { $ctx->qualify_namespace($_) } @$roles
         );
 
         $ctx->add_cleanup_code_parts(

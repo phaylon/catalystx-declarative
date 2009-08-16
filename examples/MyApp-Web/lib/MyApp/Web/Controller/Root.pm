@@ -1,9 +1,11 @@
 use CatalystX::Declare;
 
+namespace MyApp::Web;
+
 # we consume a role that does what the RenderView action class
 # would normally do
-controller MyApp::Web::Controller::Root 
-      with MyApp::Web::ControllerRole::RenderView {
+controller ::Controller::Root 
+      with ::ControllerRole::RenderView {
 
     # $CLASS is provided by CLASS.pm
     $CLASS->config(namespace => '');

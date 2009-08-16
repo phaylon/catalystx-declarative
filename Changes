@@ -1,4 +1,6 @@
 [0.007] ...
+    - used namespace keyword in examples
+    - allow namespace shorcuts in controller role application
 
 [0.006] Sun Aug 16 03:43:10 CEST 2009
     - fixed keyword listing method to use new MXD around
