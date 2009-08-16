@@ -1,7 +1,8 @@
 use CatalystX::Declare;
 
+namespace TestApp;
 
-controller TestApp::Controller::Foo with TestApp::TestRole {
+controller ::Controller::Foo with ::TestRole {
 
     use constant MyActionNo => 'TestApp::Try::Aliasing::MyActionNo';
 
