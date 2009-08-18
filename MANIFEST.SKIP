@@ -20,6 +20,8 @@
 
 # for developers only :)
 ^TODO$
+^Todo$
+^.gitignore$
 
 # Avoid temp and backup files.
 ~$
