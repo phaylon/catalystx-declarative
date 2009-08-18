@@ -27,10 +27,10 @@ requires        'CLASS',                            '1.00';
 requires        'Devel::Declare',                   '0.005011';
 requires        'Moose',                            '0.89';
 requires        'MooseX::AttributeHelpers',         '0.16';
-requires        'MooseX::Declare',                  '0.24';
+requires        'MooseX::Declare',                  '0.26';
 requires        'MooseX::MethodAttributes',         '0.15';
-requires        'MooseX::Types',                    '0.16';
-requires        'MooseX::Method::Signatures',       '0.16';
+requires        'MooseX::Types',                    '0.17';
+requires        'MooseX::Method::Signatures',       '0.20';
 requires        'TryCatch',                         '1.001001';
 requires        'FindBin';
 

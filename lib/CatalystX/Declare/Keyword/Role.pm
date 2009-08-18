@@ -5,23 +5,42 @@ class CatalystX::Declare::Keyword::Role
 
 
     use aliased 'MooseX::MethodAttributes::Role::Meta::Role';
-    use aliased 'CatalystX::Declare::Keyword::Action', 'ActionKeyword';
+    use aliased 'MooseX::Role::Parameterized::Meta::Role::Parameterizable';
+    use aliased 'CatalystX::Declare::Keyword::Action',  'ActionKeyword';
 
+
+    around import_symbols_from (Object $ctx) {
+
+        $ctx->has_parameter_signature
+        ? $self->$orig($ctx)
+        : sprintf('Moose::Role -traits => q(MethodAttributes),')
+    }
 
     before add_namespace_customizations (Object $ctx, Str $package) {
 
+        my $source  = $self->import_symbols_from($ctx);
+        my @symbols = $self->imported_moose_symbols;
+
         $ctx->add_preamble_code_parts(
             'use CLASS',
-            'use Moose::Role -traits => q(MethodAttributes)',
         );
     }
 
-    around default_inner {
+    after add_namespace_customizations (Object $ctx, Str $package) {
 
-        my @modifiers = qw( );
+        $ctx->add_preamble_code_parts(
+            sprintf(
+                'use %s -traits => q(%s), qw( has )',
+                'MooseX::Role::Parameterized',
+                'MooseX::MethodAttributes::Role::Meta::Role',
+            ),
+        ) if $ctx->has_parameter_signature;
+    }
+
+    around default_inner (@args) {
 
         return [ 
-            ( grep { my $id = $_->identifier; not grep { $id eq $_ } @modifiers } @{ $self->$orig() || [] } ),
+            @{ $self->$orig(@args) },
             ActionKeyword->new(identifier => 'action'),
             ActionKeyword->new(identifier => 'under'),
             ActionKeyword->new(identifier => 'final'),

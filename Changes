@@ -1,5 +1,7 @@
 [0.008] ...
     - default_inner now ignores arguments
+    - preparations for parameterized roles
+    - MooseX::Method::Signatures now publically exposes signature object
 
 [0.007] Sun Aug 16 04:12:43 CEST 2009
     - used namespace keyword in examples

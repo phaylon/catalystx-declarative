@@ -1,4 +1,5 @@
 use MooseX::Declare;
+use MooseX::Role::Parameterized ();
 
 class CatalystX::Declare::Keyword::Action
     with MooseX::Declare::Syntax::KeywordHandling {
@@ -8,7 +9,7 @@ class CatalystX::Declare::Keyword::Action
     use Perl6::Junction     qw( any );
     use Data::Dump          qw( pp );
     use MooseX::Types::Util qw( has_available_type_export );
-    use Moose::Util         qw( add_method_modifier );
+    use Moose::Util         qw( add_method_modifier ensure_all_roles );
     use Class::Inspector;
     use Class::MOP;
 
@@ -19,6 +20,7 @@ class CatalystX::Declare::Keyword::Action
     use aliased 'CatalystX::Declare::Action::CatchValidationError';
     use aliased 'MooseX::Method::Signatures::Meta::Method';
     use aliased 'MooseX::MethodAttributes::Role::Meta::Method', 'AttributeRole';
+    use aliased 'MooseX::MethodAttributes::Role::Meta::Role',   'AttributeMetaRole';
 
 
     method parse (Object $ctx, Str :$modifier?, Int :$skipped_declarator = 0) {
@@ -141,8 +143,25 @@ class CatalystX::Declare::Keyword::Action
             }
             else {
 
-                $class->meta->add_method($name, $method);
-                $class->meta->register_method_attributes($class->can($method->name), \@attributes);
+                my $prepare_meta = sub {
+                    my ($meta) = @_;
+
+                    $meta->add_method($name, $method);
+                    $meta->register_method_attributes($meta->name->can($method->name), \@attributes);
+                };
+
+                if ($ctx->stack->[-1] and $ctx->stack->[-1]->is_parameterized) {
+                    my $real_meta = MooseX::Role::Parameterized->current_metaclass;
+
+                    $real_meta->meta->make_mutable
+                        if $real_meta->meta->is_immutable;
+                    ensure_all_roles $real_meta->meta, AttributeMetaRole
+                        if $real_meta->isa('Moose::Meta::Role');
+
+                    $real_meta->$prepare_meta;
+                }
+
+                $class->meta->$prepare_meta;
             }
         });
     }
@@ -289,7 +308,7 @@ class CatalystX::Declare::Keyword::Action
     }
 
     method _count_positional_arguments (Object $method) {
-        my $signature = $method->_parsed_signature;
+        my $signature = $method->parsed_signature;
 
         if ($signature->has_positional_params) {
             my $count = @{ scalar($signature->positional_params) };
