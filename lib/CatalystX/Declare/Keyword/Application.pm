@@ -3,19 +3,16 @@ use MooseX::Declare;
 class CatalystX::Declare::Keyword::Application
     extends MooseX::Declare::Syntax::Keyword::Class {
 
+    use aliased 'CatalystX::Declare::Context::AppSetup';
+
     
     override auto_make_immutable { 0 }
 
+    around context_traits { $self->$orig, AppSetup }
+
     override add_with_option_customizations (Object $ctx, Str $package, ArrayRef $plugins, HashRef $options) {
 
-        $ctx->add_cleanup_code_parts(
-            sprintf(
-                '%s->setup(qw( %s ))',
-                $package,
-                join(' ', @$plugins),
-            ),
-            '1;',
-        );
+        $ctx->add_setup_code_parts($package, $plugins)
     }
 
     before add_namespace_customizations (Object $ctx, Str $package) {
@@ -24,6 +21,12 @@ class CatalystX::Declare::Keyword::Application
             'use CLASS',
             'use parent q{Catalyst}',
         );
+    }
+
+    after add_optional_customizations (Object $ctx, Str $package) {
+
+        $ctx->add_setup_code_parts($package)
+            unless $ctx->setup_was_called;
     }
 }
 
@@ -76,6 +79,41 @@ A modified method that returns C<0> to signal to L<MooseX::Declare> that it
 should not make this class immutable. Currently, making application classes
 immutable isn't supported yet, therefore C<is mutable> is currently a no-op.
 This will likely change as soon as application classes can be made immutable,
+
+=head2 context_traits
+
+    List[ClassName] Object->context_traits ()
+
+This extends the remaining context traits with 
+L<CatalystX::Declare::Context::AppSetup> to manage calls to 
+L<Catalyst/MyApp-E<gt>setup>.
+
+=head2 add_with_option_customizations
+
+    Object->add_with_option_customizations (
+        Object   $ctx, 
+        Str      $package,
+        ArrayRef $plugins,
+        HashRef  $options
+    )
+
+This will prepare L<Catalyst/MyApp-E<gt>setup> to be called with the list of
+plugins that were specified as roles.
+
+=head2 add_namespace_customizations
+
+    Object->add_namespace_customizations (Object $ctx, Str $package)
+
+This will prepare L<Catalyst> as a parent and import L<CLASS> into the
+application's namespace before the other customizations are run.
+
+=head2 add_optional_customizations
+
+    Object->add_optional_customizations (Object $ctx, Str $package)
+
+After all customizations have been done, this modifier will push a call to
+L<Catalyst/MyApp-E<gt>setup> if this wasn't already done by the plugin
+specifications.
 
 =head1 SEE ALSO
 
