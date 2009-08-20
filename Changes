@@ -3,6 +3,7 @@
       RenderView should now work with isa. (thanks to all reporters!)
     - documented 'isa' action class option (experimental!)
     - fixed bug where setup wasn't called without plugins
+    - fixed bug where under block scope wasn't cleaned up
 
 [0.008] Tue Aug 18 19:59:57 CEST 2009
     - default_inner now ignores arguments

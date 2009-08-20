@@ -16,6 +16,7 @@ class CatalystX::Declare::Keyword::Action
 
     use constant STOP_PARSING   => '__MXDECLARE_STOP_PARSING__';
     use constant UNDER_VAR      => '$CatalystX::Declare::SCOPE::UNDER';
+    use constant UNDER_STACK    => '@CatalystX::Declare::SCOPE::UNDER_STACK';
 
     use aliased 'CatalystX::Declare::Action::CatchValidationError';
     use aliased 'MooseX::Method::Signatures::Meta::Method';
@@ -272,8 +273,13 @@ class CatalystX::Declare::Keyword::Action
 
         if ($ctx->peek_next_char eq '{' and $self->identifier eq 'under') {
             $ctx->inject_if_block(
-                sprintf '%s; local %s; BEGIN { %s = qq(%s) };',
-                    $ctx->scope_injector_call,
+                sprintf '%s; BEGIN { push %s, %s; %s = qq(%s) };',
+                    $ctx->scope_injector_call(
+                        sprintf ';BEGIN { %s = pop %s };', 
+                            UNDER_VAR,
+                            UNDER_STACK,
+                    ),
+                    UNDER_STACK,
                     UNDER_VAR,
                     UNDER_VAR,
                     $target,
