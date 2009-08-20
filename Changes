@@ -1,4 +1,7 @@
 [0.009] ...
+    - action classes are now moosified after loading, this means that
+      RenderView should now work with isa. (thanks to all reporters!)
+    - documented 'isa' action class option (experimental!)
 
 [0.008] Tue Aug 18 19:59:57 CEST 2009
     - default_inner now ignores arguments

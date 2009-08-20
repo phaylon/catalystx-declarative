@@ -1,5 +1,6 @@
 use MooseX::Declare;
 use Class::MOP;
+use Moose::Meta::Class;
 
 role CatalystX::Declare::Controller::DetermineActionClass
     with CatalystX::Declare::Controller::QualifyClassNames {
@@ -11,6 +12,7 @@ role CatalystX::Declare::Controller::DetermineActionClass
 
         my $fq_class = $self->_qualify_class_name('Action', $action_class);
         Class::MOP::load_class($fq_class);
+        Moose::Meta::Class->initialize($fq_class);
 
         $args{attributes}{ActionClass} ||= [$fq_class];
 

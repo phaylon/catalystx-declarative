@@ -606,6 +606,25 @@ consume the C<RichBase> role declared above:
         }
     }
 
+=head2 Action Classes
+
+B<This option is even more experimental>
+
+You might want to create an action with a different class than the usual
+L<Catalyst::Action>. A usual suspect here is L<Catalyst::Action::RenderView>.
+You can use the C<isa> option (did I mention it's experimental?) to specify
+what class to use:
+
+    controller MyApp::Web::Controller::Root {
+
+        $CLASS->config(namespace => '');
+
+        action end isa RenderView;
+    }
+
+The loaded class will be L<Moose>ified, so we are able to apply essential
+roles.
+
 =head1 ROLES
 
 =over
