@@ -586,12 +586,12 @@ not be dispatched to. This means that
 
     under base {
 
-        final as double, action double_string (Str $x) {
-            $ctx->response->body( $x x 2 );
-        }
-
         final as double, action double_integer (Int $x) {
             $ctx->response->body( $x * 2 );
+        }
+
+        final as double, action double_string (Str $x) {
+            $ctx->response->body( $x x 2 );
         }
     }
 
