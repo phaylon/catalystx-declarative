@@ -8,7 +8,7 @@ class CatalystX::Declare::Keyword::Controller
     use aliased 'CatalystX::Declare::Keyword::Action', 'ActionKeyword';
     use aliased 'CatalystX::Declare::Controller::DetermineActionClass';
     use aliased 'CatalystX::Declare::Controller::Meta::TypeConstraintMapping';
-    use aliased 'CatalystX::Declare::Controller::RegisterActionRoles';
+    use aliased 'CatalystX::Declare::Controller::ActionPreparation';
 
     use Data::Dump qw( pp );
 
@@ -29,8 +29,8 @@ class CatalystX::Declare::Keyword::Controller
 
         $ctx->add_scope_code_parts(
             sprintf('with qw( %s )', join ' ',
-                RegisterActionRoles,
                 DetermineActionClass,
+                ActionPreparation,
             ),
         );
     }
@@ -132,7 +132,7 @@ developing L<CatalystX::Declare>, you should not be concerned with them.
 
 This method modifier will initialise the controller with 
 L<MooseX::MethodAttributes> and add the 
-L<CatalystX::Declare::Controller::RegisterActionRoles> and
+L<CatalystX::Declare::Controller::ActionPreparation> and
 L<CatalystX::Declare::Controller::DetermineActionClass> controller roles
 before calling the original.
 

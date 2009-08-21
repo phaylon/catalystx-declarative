@@ -108,7 +108,7 @@ class CatalystX::Declare::Keyword::Action
 
         if ($attributes{Private}) {
             delete $attributes{ $_ }
-                for qw( Args CaptureArgs Chained Signature Subname Action );
+                for qw( Args CaptureArgs Chained Signature Private );
         }
 
         if ($ctx->peek_next_char eq '{') {
@@ -396,6 +396,10 @@ CatalystX::Declare::Keyword::Action - Declare Catalyst Actions
             # the final keyword can be used to be more 
             # visually explicit about end-points
             final action some_action { ... }
+
+            # type dispatching works
+            final action with_str (Str $x) as via_type;
+            final action with_int (Int $x) as via_type;
         }
 
         # of course you can also chain to external actions
@@ -535,8 +539,8 @@ specify an action after a C<E<lt>-> following the action name:
 =head2 Arguments
 
 You can use signatures like you are use to from L<MooseX::Method::Signatures>
-to declare action parameters. The number of arguments will be used during 
-dispatching. Dispatching by type constraint is planned but not yet implemented.
+to declare action parameters. The number of positinoal arguments will be used 
+during dispatching as well as their types.
 
 The signature follows the action name:
 
@@ -568,11 +572,25 @@ an array as a variable:
 
 =head2 Validation
 
-Currently, when the arguments do not fit the signature because of a L<Moose>
-validation error, the response body will be set to C<Not found> and the
-status to C<404>. This only applies when debug mode is off. If it is turned on,
-the error message will be prefixed with C<BAD REQUEST: >. The action will 
-automatically detach after a failed signature validation.
+The signatures are now validated during dispatching-time, and an action with
+a non-matching signature (number of positional arguments and their types) will
+not be dispatched to. This means that
+
+    action base under '/' as '';
+
+    under base {
+
+        final as double, action double_string (Str $x) {
+            $ctx->response->body( $x x 2 );
+        }
+
+        final as double, action double_integer (Int $x) {
+            $ctx->response->body( $x * 2 );
+        }
+    }
+
+will return C<foofoo> when called as C</double/foo> and C<46> when called as
+C</double/23>.
 
 =head2 Actions and Method Modifiers
 

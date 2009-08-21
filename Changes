@@ -4,6 +4,8 @@
     - documented 'isa' action class option (experimental!)
     - fixed bug where setup wasn't called without plugins
     - fixed bug where under block scope wasn't cleaned up
+    - action signatures now influence dispatching, non-matching actinos
+      will be skipped by the chained dispatch type
 
 [0.008] Tue Aug 18 19:59:57 CEST 2009
     - default_inner now ignores arguments

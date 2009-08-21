@@ -250,5 +250,9 @@ controller ::Controller::Foo with ::TestRole {
         $ctx->response->body($x);
     }
 
+    final action wants_integer_fail (Any $x) as 'wants_integer' under base {
+        $ctx->response->body('no integer');
+    }
+
 }
 

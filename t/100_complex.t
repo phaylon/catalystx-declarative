@@ -62,7 +62,7 @@ is get('/foo/surrounded_target'), 'foo/surrounded_target surrounded', 'action wa
 is get('/foo/inline_class'), 'HELLO', 'inline classes work as expected';
 
 # error handling
-is get('/foo/wants_integer/butdoesntgetone'), 'Not found', 'validation error causes bad request error';
+is get('/foo/wants_integer/butdoesntgetone'), 'no integer', 'validation error causes bad request error';
 
 # fix bug with capture args below under { }
 is get('/foo/lower/down/the/param/3/road/5'), 8, 'capture args and block under work together';
