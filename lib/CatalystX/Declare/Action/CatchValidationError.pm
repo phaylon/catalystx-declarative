@@ -2,8 +2,6 @@ use MooseX::Declare;
 
 role CatalystX::Declare::Action::CatchValidationError {
 
-    use TryCatch;
-
     use aliased 'Moose::Meta::TypeConstraint';
 
     has method_type_constraint => (
