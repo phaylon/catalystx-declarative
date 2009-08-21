@@ -1,3 +1,5 @@
+[0.010] ...
+
 [0.009] Fri Aug 21 23:54:11 CEST 2009
     - action classes are now moosified after loading, this means that
       RenderView should now work with isa. (thanks to all reporters!)
