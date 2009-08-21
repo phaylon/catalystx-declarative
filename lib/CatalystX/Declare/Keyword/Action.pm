@@ -441,6 +441,12 @@ C<get_item> method:
         $ctx->stash(item => $self->get_item);
     }
 
+=head2 Why $ctx instead of $c
+
+Some might ask why the context object is called C<$ctx> instead of the usual
+C<$c>. The reason is simple: It's an opinionated best practice, since C<$ctx>
+stands out more.
+
 =head2 Setting a Path Part
 
 As usual with Catalyst actions, the path part (the public name of this part of
