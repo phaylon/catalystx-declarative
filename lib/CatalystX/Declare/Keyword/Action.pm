@@ -135,20 +135,22 @@ class CatalystX::Declare::Keyword::Action
             my $class = caller;
             my $body  = shift;
 
-            $method->_set_actual_body($body);
-            $method->{attributes} = \@attributes;
+            my $real_method = $method->reify(
+                actual_body => $body,
+                attributes  => \@attributes,
+            );
 
             if ($modifier) {
 
-                add_method_modifier $class, $modifier, [$name, $method];
+                add_method_modifier $class, $modifier, [$name, $real_method];
             }
             else {
 
                 my $prepare_meta = sub {
                     my ($meta) = @_;
 
-                    $meta->add_method($name, $method);
-                    $meta->register_method_attributes($meta->name->can($method->name), \@attributes);
+                    $meta->add_method($name, $real_method);
+                    $meta->register_method_attributes($meta->name->can($real_method->name), \@attributes);
                 };
 
                 if ($ctx->stack->[-1] and $ctx->stack->[-1]->is_parameterized) {
