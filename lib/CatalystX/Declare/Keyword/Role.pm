@@ -67,6 +67,13 @@ CatalystX::Declare::Keyword::Role - Declare Catalyst Controller Roles
         around bar_action (Object $ctx) { ... }
     }
 
+    controller_role MyApp::Web::ControllerRole::WithParam (Str :$msg!) {
+
+        final action message under base {
+            $ctx->stash(message => $msg);
+        }
+    }
+
 =head1 DESCRIPTION
 
 This handler provides the C<controller_role> keyword. It is an extension of the
@@ -75,6 +82,17 @@ controllers, the C<method> keyword and the modifiers are provided. For details
 on the syntax for action declarations have a look at
 L<CatalystX::Declare::Keyword::Action>, which also documents the effects of
 method modifiers on actions.
+
+=head2 Parameters
+
+You can use a parameter signature containing named parameters for a role. To
+apply the controller role in the L</SYNOPSIS>, you'd use code like this:
+
+    controller MyApp::Web::Controller::Hello {
+        with 'MyApp::Web::ControllerRole::WithParam' => { msg => 'Hello!' };
+
+        action base under '/' as '';
+    }
 
 =head1 SUPERCLASSES
 
