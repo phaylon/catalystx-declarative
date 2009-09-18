@@ -1,6 +1,6 @@
 use CatalystX::Declare;
 
-controller_role TestApp::ControllerRole::Parameterized (Str :$message, Str :$base, Str :$part) {
+controller_role TestApp::ControllerRole::Parameterized (Str :$message, Str :$base, Str :$part, Str :$action) {
 
     method get_message { $message }
 
@@ -24,6 +24,14 @@ controller_role TestApp::ControllerRole::Parameterized (Str :$message, Str :$bas
 
         final action complex as "$part/deep" {
             $ctx->response->body( "$part/deep under $base" );
+        }
+
+        final action $action {
+            $ctx->response->body( "$action action" );
+        }
+
+        final action actionalias {
+            $self->$action($ctx);
         }
     }
 }

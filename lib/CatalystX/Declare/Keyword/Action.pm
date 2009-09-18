@@ -96,7 +96,7 @@ class CatalystX::Declare::Keyword::Action {
             for @populators;
 
         unless ($attributes{Private}) {
-            $attributes{PathPart} ||= "'$name'";
+            $attributes{PathPart} ||= $name;
 
             delete $attributes{CaptureArgs}
                 if exists $attributes{Args};
@@ -150,9 +150,16 @@ class CatalystX::Declare::Keyword::Action {
             my $class = caller;
             my $attrs = shift;
             my $body  = shift;
+            my $name  = $attrs->{Subname};
 
             $body = $attrs and $attrs = {}
                 if ref $attrs eq 'CODE';
+
+            unless ($attrs->{Private}) {
+
+                $attrs->{PathPart} = $attrs->{Subname}
+                    unless defined $attrs->{PathPart};
+            }
 
             delete $attrs->{Chained}
                 unless defined $attrs->{Chained};
@@ -170,6 +177,7 @@ class CatalystX::Declare::Keyword::Action {
             my $real_method = $method->reify(
                 actual_body => $body,
                 attributes  => $compiled_attrs,
+                name        => $name,
             );
 
             if ($modifier) {
@@ -242,7 +250,7 @@ class CatalystX::Declare::Keyword::Action {
     method _handle_action_option (Object $ctx, HashRef $attrs) {
 
         # action name
-        my $name = $ctx->strip_name
+        my $name = $self->_strip_actionpath($ctx, interpolate => 1)
             or croak "Anonymous actions not yet supported";
 
         $ctx->skipspace;
@@ -356,13 +364,11 @@ class CatalystX::Declare::Keyword::Action {
 
     method _inject_attributes (Object $ctx, HashRef $attrs) {
 
-        my @inject = qw( Chained PathPart );
+        my @inject = qw( Chained PathPart Subname );
 
         my $code = sprintf ' +{ %s }, sub ',
             join ', ',
             map  { (@$_) }
-#            map  { [$_->[0], sprintf '"%s"', $_->[1]] }
-#            map  { length(  $_->[1] ) ? $_ : [$_->[0], "''"] }
             map  { defined( $_->[1] ) ? $_ : [$_->[0], 'undef'] }
             map  { [pp($_), $attrs->{ $_ }] }
             grep { defined $attrs->{ $_ } }

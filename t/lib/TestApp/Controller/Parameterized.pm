@@ -5,6 +5,7 @@ controller TestApp::Controller::Parameterized {
         message => 'foo',
         base    => 'somebase',
         part    => 'somepart',
+        action  => 'someaction',
     };
 
     action base under '/' as 'param';

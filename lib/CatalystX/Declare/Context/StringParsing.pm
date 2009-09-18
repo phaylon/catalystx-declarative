@@ -5,7 +5,7 @@ role CatalystX::Declare::Context::StringParsing {
     use Devel::Declare;
 
     after inject_code_parts_here (@args) {
-#        print "INJECT " . $self->get_linestr . "\n";
+ #       print "INJECT " . $self->get_linestr . "\n";
         #print "BLOCK $_\n" for @args;
     }
 

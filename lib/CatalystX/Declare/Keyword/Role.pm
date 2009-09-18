@@ -95,7 +95,7 @@ apply the controller role in the L</SYNOPSIS>, you'd use code like this:
     }
 
 You can currently only use the parameters in action declarations in the body,
-the C<as> path part and the C<under> base action specification:
+te name, the C<as> path part and the C<under> base action specification:
 
     controller_role Foo (Str :$base, Str :$part) {
 
@@ -106,6 +106,15 @@ You can specify the parameters either as plain scalar variables or as quoted
 strings. The latter is especially useful for more complex path parts:
 
     action foo under $base as "$pathpart/fnord" { ... }
+
+To use it in the action name is rather simple:
+
+    final action $foo { ... }
+
+You might want to use the C<as $foo> option to specify a path part instead, 
+though. Use the dynamic action name possibility only if you are really 
+concerned with the name of the generated method, not only the path the 
+action is reachable under.
 
 =head1 SUPERCLASSES
 
