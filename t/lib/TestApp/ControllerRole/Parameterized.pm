@@ -21,5 +21,9 @@ controller_role TestApp::ControllerRole::Parameterized (Str :$message, Str :$bas
         final action scoped {
             $ctx->response->body( "scoped under $base" );
         }
+
+        final action complex as "$part/deep" {
+            $ctx->response->body( "$part/deep under $base" );
+        }
     }
 }
