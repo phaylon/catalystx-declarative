@@ -15,5 +15,6 @@ is get('/param/somebase/scoped'), 'scoped under somebase', 'dynamic base in unde
 is get('/param/somebase/somepart/deep'), 'somepart/deep under somebase', 'more complex strings';
 is get('/param/somebase/someaction'), 'someaction action', 'dynamic action name';
 is get('/param/somebase/actionalias'), 'someaction action', 'dynamic action name in method call';
+is get('/param/somebase/SOMEPART'), 'upper as SOMEPART under somebase', 'value prepared at runtime in role body';
 
 done_testing;

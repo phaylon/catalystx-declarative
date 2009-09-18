@@ -34,4 +34,10 @@ controller_role TestApp::ControllerRole::Parameterized (Str :$message, Str :$bas
             $self->$action($ctx);
         }
     }
+
+    my $upper_part = uc $part;
+
+    final action upper as $upper_part under $base {
+        $ctx->response->body("upper as $upper_part under $base");
+    }
 }

@@ -3,6 +3,7 @@
     - parameterized roles now available
     - path parts and chain base actions are parameterizable
     - action names are parameterizable
+    - fixed parameterized role target meta object bug
 
 [0.010] Sun Sep 13 15:52:01 CEST 2009
     - Fix Compat with MooseX::Method::Signatures >=0.22 ( KENTNL )

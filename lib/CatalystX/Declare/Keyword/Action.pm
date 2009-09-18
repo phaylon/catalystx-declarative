@@ -211,8 +211,10 @@ class CatalystX::Declare::Keyword::Action {
 
                     $real_meta->$prepare_meta;
                 }
+                else {
 
-                $class->meta->$prepare_meta;
+                    $class->meta->$prepare_meta;
+                }
             }
         });
     }
