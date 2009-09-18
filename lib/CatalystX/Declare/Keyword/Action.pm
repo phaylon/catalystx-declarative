@@ -111,11 +111,15 @@ class CatalystX::Declare::Keyword::Action {
                 for qw( Args CaptureArgs Chained Signature Private );
         }
 
+        # inject a hashref for resolving runtime attribute values
         $self->_inject_attributes($ctx, \%attributes);
 
+        # our declaration is followed by a block
         if ($ctx->peek_next_char eq '{') {
             $ctx->inject_if_block($ctx->scope_injector_call . $method->injectable_code);
         }
+
+        # there is no block, so we insert one.
         else {
             $ctx->inject_code_parts_here(
                 sprintf '{ %s%s }',
@@ -131,10 +135,8 @@ class CatalystX::Declare::Keyword::Action {
             for my $attr (keys %$attributes) {
                 my $value = $attributes->{ $attr };
 
+                # the compiletime chained attr might contain the under global var name
                 next if $attr eq 'Chained' and $value eq UNDER_VAR;
-
-#                $value = sprintf "'%s'", $value
-#                    if grep { $attr eq $_ } qw( Chained PathPart );
 
                 push @attributes, 
                     map { sprintf '%s%s', $attr, defined($_) ? sprintf('(%s)', $_) : '' }
@@ -150,29 +152,34 @@ class CatalystX::Declare::Keyword::Action {
             my $class = caller;
             my $attrs = shift;
             my $body  = shift;
+
+            # the runtime-resolved name
             my $name  = $attrs->{Subname};
 
+            # in case no hashref was specified
             $body = $attrs and $attrs = {}
                 if ref $attrs eq 'CODE';
 
+            # default path part to runtime-resolved name
             unless ($attrs->{Private}) {
 
                 $attrs->{PathPart} = $attrs->{Subname}
                     unless defined $attrs->{PathPart};
             }
 
+            # in CXD we are explicit about chained values, an undefined
+            # value means we defaulted to the outer-scope under and there
+            # was none.
             delete $attrs->{Chained}
                 unless defined $attrs->{Chained};
 
+            # some attrs need to be single quoted in their stringified forms
             defined($attrs->{ $_ }) and $attrs->{ $_ } = sprintf "'%s'", $attrs->{ $_ }
                 for qw( Chained PathPart );
 
-#            pp \%attributes;
-#            pp $attrs;
+            # merge runtime and compiletime attrs
             my %full_attrs = (%attributes, %$attrs);
-#            pp \%full_attrs;
             my $compiled_attrs = $compile_attrs->(\%full_attrs);
-#            pp $compiled_attrs;
 
             my $real_method = $method->reify(
                 actual_body => $body,
@@ -180,6 +187,7 @@ class CatalystX::Declare::Keyword::Action {
                 name        => $name,
             );
 
+            # NYI
             if ($modifier) {
 
                 add_method_modifier $class, $modifier, [$name, $real_method];
@@ -256,6 +264,7 @@ class CatalystX::Declare::Keyword::Action {
         $ctx->skipspace;
         my $populator;
 
+        # shortcut under base option is basically handled by the under handler
         if (substr($ctx->get_linestr, $ctx->offset, 2) eq '<-') {
             my $linestr = $ctx->get_linestr;
             substr($linestr, $ctx->offset, 2) = '';
@@ -272,6 +281,8 @@ class CatalystX::Declare::Keyword::Action {
         $attrs->{Action}    = [];
 
         push @{ $attrs->{CatalystX_Declarative_ActionRoles} ||= [] }, CatchValidationError;
+
+        # default chained base to the global under var, to be resolved at runtime
         $attrs->{Chained} ||= UNDER_VAR;
 
         return unless $populator;
@@ -364,16 +375,19 @@ class CatalystX::Declare::Keyword::Action {
 
     method _inject_attributes (Object $ctx, HashRef $attrs) {
 
+        # attrs that need to be runtime-resolved
         my @inject = qw( Chained PathPart Subname );
 
-        my $code = sprintf ' +{ %s }, sub ',
-            join ', ',
+        # turn specific attributes into a hashref
+        my $code = sprintf ' +{ %s }, sub ',        # the ', sub ' turns method +{ ... } { ... } into 
+            join ', ',                              #   method +{ ... }, sub { ... }
             map  { (@$_) }
             map  { defined( $_->[1] ) ? $_ : [$_->[0], 'undef'] }
             map  { [pp($_), $attrs->{ $_ }] }
             grep { defined $attrs->{ $_ } }
             @inject;
 
+        # inject the hashref code before the action body
         $ctx->inject_code_parts_here($code);
         $ctx->inc_offset(length $code);
     }
@@ -385,24 +399,32 @@ class CatalystX::Declare::Keyword::Action {
         my $rest    = substr($linestr, $ctx->offset);
         my $interp  = sub { $interpolate ? "'$_[0]'" : $_[0] };
 
+        # find simple barewords
         if ($rest =~ /^ ( [_a-z] [_a-z0-9]* ) \b/ix) {
             substr($linestr, $ctx->offset, length($1)) = '';
             $ctx->set_linestr($linestr);
             return $interp->($1);
         }
+
+        # allow single quoted more complex barewords
         elsif ($rest =~ /^ ' ( (?:[.:;,_a-z0-9]|\/)* ) ' /ix) {
             substr($linestr, $ctx->offset, length($1) + 2) = '';
             $ctx->set_linestr($linestr);
             return $interp->($1);
         }
+
+        # double quoted strings and variables
         elsif ($interpolate and my $str = $ctx->get_string) {
             return $str;
         }
+
+        # not suitable as action path
         else {
             croak "Invalid syntax for action path: $rest";
         }
     }
     
+    # down here because it requires the parse method
     with 'MooseX::Declare::Syntax::KeywordHandling';
 
     around context_traits { $self->$orig, StringParsing }

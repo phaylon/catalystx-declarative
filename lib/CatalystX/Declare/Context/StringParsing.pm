@@ -4,16 +4,6 @@ role CatalystX::Declare::Context::StringParsing {
 
     use Devel::Declare;
 
-    after inject_code_parts_here (@args) {
- #       print "INJECT " . $self->get_linestr . "\n";
-        #print "BLOCK $_\n" for @args;
-    }
-
-    after inject_if_block (@args) {
-#        print "BLOCK " . $self->get_linestr . "\n";
-        #print "BLOCK $_\n" for @args;
-    }
-
     method rest_of_line {
 
         $self->skipspace;
@@ -35,6 +25,7 @@ role CatalystX::Declare::Context::StringParsing {
 
         my $left = $self->rest_of_line;
 
+        # only work on allowed types of string declarations
         if ($left =~ /^"/ and my $num = Devel::Declare::toke_scan_str $self->offset) {
 
             my $found = Devel::Declare::get_lex_stuff;
@@ -44,6 +35,8 @@ role CatalystX::Declare::Context::StringParsing {
             
             return qq{"$found"};
         }
+
+        # check for a scalar version if nothing found
         else {
             return $self->get_scalar;
         }
@@ -53,6 +46,7 @@ role CatalystX::Declare::Context::StringParsing {
         
         my $left = $self->rest_of_line;
 
+        # only allow simple scalars
         if ($left =~ s/^ ( \$ [a-z_] [a-z0-9_]* ) //ix) {
 
             my $found = $1;
@@ -61,6 +55,8 @@ role CatalystX::Declare::Context::StringParsing {
 
             return qq{"$found"};
         }
+
+        # nothing suitable found
         else {
             return undef;
         }
