@@ -743,6 +743,14 @@ what class to use:
 The loaded class will be L<Moose>ified, so we are able to apply essential
 roles.
 
+=head2 Private Actions
+
+B<This option is a bit less, but still pretty experimental>
+
+You can declare private actions with the C<is private> trait:
+
+    action end is private isa RenderView;
+
 =head1 ROLES
 
 =over
