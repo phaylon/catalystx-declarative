@@ -11,5 +11,5 @@ controller RenderViewTestApp::Controller::Root {
         $ctx->stash(current_view => 'Test');
     }
 
-    action end isa RenderView;
+    action end is private isa RenderView;
 }

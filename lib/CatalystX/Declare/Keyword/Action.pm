@@ -80,6 +80,10 @@ class CatalystX::Declare::Keyword::Action {
 
         my $name   = $attributes{Subname};
 
+        if ($attributes{Private}) {
+            $attributes{Signature} ||= '@';
+        }
+
         my $method = Method->wrap(
             signature       => qq{($attributes{Signature})},
             package_name    => $ctx->get_curstash_name,
@@ -305,6 +309,9 @@ class CatalystX::Declare::Keyword::Action {
     }
 
     method _build_flag_populator (Object $ctx, HashRef $attrs, Str $what) {
+
+        $attrs->{Private} = []
+            if $what eq 'private';
 
         return sub {
             my $method = shift;
