@@ -40,4 +40,8 @@ controller_role TestApp::ControllerRole::Parameterized (Str :$message, Str :$bas
     final action upper as $upper_part under $base {
         $ctx->response->body("upper as $upper_part under $base");
     }
+
+    final action short <- $base (Str $x) {
+        $ctx->response->body('short ' . $x);
+    }
 }

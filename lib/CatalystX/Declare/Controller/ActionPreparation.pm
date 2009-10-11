@@ -34,12 +34,17 @@ role CatalystX::Declare::Controller::ActionPreparation {
         return
             if $type->DOES(ChainTypeSensitivity);
 
-        # FIXME this is ugly as hell
         my $immutable = $type->meta->is_immutable;
-        $type->meta->make_mutable
-            if $immutable;
+        my %immutable_options;
+        if ($immutable) {
+            %immutable_options = $type->meta->immutable_options;
+            $type->meta->make_mutable;
+        }
+
+        # FIXME we really shouldn't have to tweak the dispatch type
         ChainTypeSensitivity->meta->apply($type->meta);
-        $type->meta->make_immutable
+
+        $type->meta->make_immutable(%immutable_options)
             if $immutable;
     }
 

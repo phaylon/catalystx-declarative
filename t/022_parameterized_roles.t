@@ -16,5 +16,6 @@ is get('/param/somebase/somepart/deep'), 'somepart/deep under somebase', 'more c
 is get('/param/somebase/someaction'), 'someaction action', 'dynamic action name';
 is get('/param/somebase/actionalias'), 'someaction action', 'dynamic action name in method call';
 is get('/param/somebase/SOMEPART'), 'upper as SOMEPART under somebase', 'value prepared at runtime in role body';
+is get('/param/somebase/short/foo'), 'short foo', 'dynamic base in shortcut declaration';
 
 done_testing;
