@@ -55,12 +55,10 @@ class CatalystX::Declare::Keyword::Controller
 
         $package = $ctx->qualify_namespace($package);
 
-        $ctx->add_cleanup_code_parts(
-            map {
-                sprintf('Class::MOP::load_class(%s)', pp "$_"),
-                sprintf('%s->meta->apply(%s->meta)', $_, $package),
-            } map { $ctx->qualify_namespace($_) } @$roles
-        );
+        $ctx->add_cleanup_code_parts('Moose::Util::apply_all_roles("' . $package . '", qw/'
+            . join(' ', map { $ctx->qualify_namespace($_) } @$roles)
+            . '/)')
+            if scalar @$roles;
 
         $ctx->add_cleanup_code_parts(
             sprintf '%s->meta->make_immutable', $package
@@ -153,9 +151,7 @@ controllers.
     )
 
 This hook method will be called by L<MooseX::Declare> when C<with> options were
-encountered. It will load the specified class and apply them to the controller
-one at a time. This will change in the future, and they will be all applied 
-together.
+encountered. Since 0.011 the roles will be applied all at once.
 
 This method will also add a callback to make the controller immutable to the
 cleanup code parts unless C<is mutable> was specified.
