@@ -25,7 +25,8 @@ controller ::Controller::Foo with ::TestRole {
 
         around execute ($controller, $ctx, @args) {
             my $page = $ctx->request->params->{page} || 1;
-            return $self->$orig($controller, $ctx, @args, page => $page);
+            $ctx->stash(page => $page);
+            return $self->$orig($controller, $ctx, @args);
         }
     }
 
@@ -180,10 +181,10 @@ controller ::Controller::Foo with ::TestRole {
         $ctx->stash(title => $title);
     }
 
-    action view (Str $format, Int :$page) under book isa Page is final {
+    action view (Str $format) under book isa Page is final {
         $ctx->response->body(
             sprintf 'Page %d of "%s" as %s',
-                $page,
+                $ctx->stash->{page},
                 $ctx->stash->{title},
                 uc($format),
         );

@@ -27,6 +27,16 @@ role CatalystX::Declare::Controller::ActionPreparation {
             };
     }
 
+    method _find_method_named_params (Str $name) {
+
+        return $self->meta->find_method_named_params($name);
+    }
+
+    method _find_method_named_type_constraint (Str $method, Str $param) {
+
+        return $self->meta->find_method_named_type_constraint($method, $param);
+    }
+
     method _ensure_applied_dispatchtype_roles {
 
         my $type = $self->_app->dispatcher->dispatch_type('Chained');
@@ -68,12 +78,22 @@ role CatalystX::Declare::Controller::ActionPreparation {
             unless $action->DOES(CatchValidationError);
 
         my $tc = $self->_find_method_type_constraint($action->name);
+        my $np = $self->_find_method_named_params($action->name);
 
         return $action
             unless $tc;
 
-        $action->method_type_constraint($tc);
         $action->controller_instance($self);
+        $action->method_type_constraint($tc);
+
+        if ($np) {
+
+            $action->method_named_params($np);
+            $action->method_named_type_constraint({
+                map +($_, $self->_find_method_named_type_constraint($action->name, $_)),
+                    @$np,
+            });
+        }
 
         return $action;
     }

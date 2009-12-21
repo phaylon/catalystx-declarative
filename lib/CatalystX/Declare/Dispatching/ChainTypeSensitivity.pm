@@ -27,9 +27,10 @@ role CatalystX::Declare::Dispatching::ChainTypeSensitivity {
 
             my $tc   = $action->method_type_constraint;
             my $ctrl = $action->controller_instance;
+            my $np   = $action->extract_named_params($ctx);
 
             return ()
-                unless $tc->check([$ctrl, $ctx, @action_parts]);
+                unless $tc->_type_constraint->check([[$ctrl, $ctx, @action_parts], $np]);
         }
 
         $self->$orig($ctx, $parent, $path_parts);

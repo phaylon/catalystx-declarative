@@ -1,3 +1,6 @@
+[0.012] ...
+    - fixed query parameter handling
+
 [0.011] Sun Oct 11 20:18:19 CEST 2009
     - fixed broken isa RenderView test case
     - parameterized roles now available

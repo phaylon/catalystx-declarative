@@ -658,6 +658,10 @@ Named parameters will be populated with the values in the query parameters:
     # /view/17/?page=3
     final action view (Int $id, Int :$page = 1) under '/';
 
+If you specify a query parameter to be an C<ArrayRef>, it will be specially
+handled. For one, it will match even if there is no such value in the
+parameters. Second, it will always be wrapped as an array reference.
+
 Your end-points can also take an unspecified amount of arguments by specifying
 an array as a variable:
 
