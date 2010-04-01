@@ -38,8 +38,6 @@ role CatalystX::Declare::Action::CatchValidationError {
 
             for my $key (@$named) {
 
-                next unless exists $ctx->request->params->{ $key };
-
                 my $value = $ctx->request->params->{ $key };
                 my $tc    = $tcs->{ $key };
                 
@@ -50,6 +48,10 @@ role CatalystX::Declare::Action::CatchValidationError {
 
                     $value = [$value]
                         unless is_ArrayRef $value;
+                }
+                else {
+                    
+                    next unless exists $ctx->request->params->{ $key };
                 }
 
                 $extracted{ $key } = $value;
